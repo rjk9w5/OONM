@@ -15,25 +15,14 @@
 //////////////////////////////////////////////////////////////////////
 /// @fn Polynomial()
 /// @brief Default Constructor for Polynomial object
-/// @pre None
 /// @post Initializes an empty Polynomial object
 ////////////////////////////////////////////////////////////////////// 
 
 //////////////////////////////////////////////////////////////////////
 /// @fn Polynomial(const Polynomial<T>& src)
 /// @brief Copy constructor for Polynomial object
-/// @pre Input must be a Polynomial object
 /// @post Initializes a copy of Polynomial object
 /// @param Polynomial object to be copied
-////////////////////////////////////////////////////////////////////// 
-
-//////////////////////////////////////////////////////////////////////
-/// @fn Polynomial(const Polynomial<T>& src)
-/// @brief Copy constructor for Polynomial object
-/// @pre Input must be a pointer. src[0] will correspond to the 
-///  polynomial term of order 0 and src[1] to order 1 and so on.
-/// @post Initializes Polynomial object from an input array
-/// @param Pointer of type T containing coefficients to polynomial
 ////////////////////////////////////////////////////////////////////// 
 
 //////////////////////////////////////////////////////////////////////
@@ -165,11 +154,31 @@
 /// @fn (private) polycpy
 /// @brief Helper function to copy polynomials safely
 /// @pre 
-/// @post updates class m_coeff and m_order pointers
+/// @post updates class m_coeff and m_order pointers safely
 /// @param pointer to array containing coefficient of nth term
 /// @param pointer to array containing order of the nth term
 /// @return none
 //////////////////////////////////////////////////////////////////////
+
+#include <iostream>
+#include <exception>
+
+struct file_error: std::exception
+{
+  public:
+    file_error(){}
+    file_error(char* what_msg):
+      msg(what_msg),
+      line(-1) {}
+    file_error(char* what_msg, const int ln):
+      msg(what_msg),
+      line(ln) {}
+    const char* what() const noexcept {return msg;}
+    const int onLine() const {return line;}
+  private:
+    char* msg;
+    int line;
+};
 
 template <class T>
 class Polynomial
@@ -177,36 +186,36 @@ class Polynomial
   public:
     Polynomial();
     Polynomial(const Polynomial<T>& src);
-    Polynomial(const T* coeff, const int order);
+    ~Polynomial();
     
     // Operator Overloads
-    Polynomial<T>& operator+=(const Polynomial<T>& rhs);
-    Polynomial<T>& operator+(const Polynomial<T>& rhs) const;
-    Polynomial<T>& operator-=(const Polynomial<T>& rhs);
-    Polynomial<T>& operator-(const Polynomial<T>& rhs) const;
+    Polynomial<T>& operator+=(const Polynomial<T> &rhs);
+    Polynomial<T>& operator+(const Polynomial<T> &rhs) const;
+    Polynomial<T>& operator-=(const Polynomial<T> &rhs);
+    Polynomial<T>& operator-(const Polynomial<T> &rhs) const;
     
     Polynomial<T>& operator-() const;
     Polynomial<T>& operator~() const;
     
-    bool operator==(const Polynomial<T>& rhs, const Polynomial<T>& lhs) const;
-    bool operator!=(const Polynomial<T>& rhs, const Polynomial<T>& lhs) const;
+    bool operator==(const Polynomial<T> &rhs, const Polynomial<T> &lhs) const;
+    bool operator!=(const Polynomial<T> &rhs, const Polynomial<T> &lhs) const;
     
-    Polynomial<T>& operator=(const Polynomial<T>& rhs);
+    Polynomial<T>& operator=(const Polynomial<T> &rhs);
     
     T& operator[](const int i);
     const T& operator[](const int i) const;
-    T& operator()(const T& x) const;
+    T& operator()(const T &x) const;
     
     // Friends
-    friend ostream& operator<<(ostream& out, const Polynomial<T>& p);
-    friend ostream& operator>>(istream& in, Polynomial<T>& p);
+    friend std::ostream& operator<<(std::ostream& out, const Polynomial<T> &p);
+    friend std::istream& operator>>(std::istream& in, Polynomial<T> &p);
     
   private:
     int m_nterms;
-    T* m_coeff; // Holds values of coefficients
-    T* m_order; // Holds corresponding order of coefficients
+    autoArray<T> m_coeff; // Holds values of coefficients
+    autoArray<T> m_order; // Holds corresponding order of coefficients
     void polycpy(const T* src_order, const T*  src_coeff);
-}
+};
 
 #include "polynomial.tpp"
 

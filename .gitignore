@@ -2,3 +2,8 @@
 # *.txt
 driver
 Homework/1/submit/2016sp-a-hw1-rjk9w5*
+# Submit repos for homework
+*2016sp*
+# Eclipse Generated garbage
+.cproject
+.project
