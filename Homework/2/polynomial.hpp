@@ -13,20 +13,20 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn Polynomial()
+/// @fn Polynomial::Polynomial()
 /// @brief Default Constructor for Polynomial object
 /// @post Initializes an empty Polynomial object
 ////////////////////////////////////////////////////////////////////// 
 
 //////////////////////////////////////////////////////////////////////
-/// @fn Polynomial(const Polynomial<T>& src)
+/// @fn Polynomial::Polynomial(const Polynomial<T>& src)
 /// @brief Copy constructor for Polynomial object
 /// @post Initializes a copy of Polynomial object
 /// @param Polynomial object to be copied
 ////////////////////////////////////////////////////////////////////// 
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator +=
+/// @fn Polynomial::operator +=
 /// @brief Plus equals operator
 /// @pre 
 /// @post 
@@ -35,7 +35,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator +
+/// @fn Polynomial::operator +
 /// @brief Addition operator
 /// @pre 
 /// @post 
@@ -44,7 +44,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator -=
+/// @fn Polynomial::operator -=
 /// @brief Minus equals operator
 /// @pre 
 /// @post 
@@ -53,7 +53,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator -
+/// @fn Polynomial::operator -
 /// @brief Subtraction operator
 /// @pre 
 /// @post 
@@ -62,7 +62,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator -
+/// @fn Polynomial::operator -
 /// @brief Unary negation operator
 /// @pre 
 /// @post 
@@ -70,7 +70,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator ~
+/// @fn Polynomial::operator ~
 /// @brief Negation operator
 /// @pre 
 /// @post 
@@ -79,7 +79,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator ==
+/// @fn Polynomial::operator ==
 /// @brief Equality operator
 /// @pre 
 /// @post 
@@ -88,7 +88,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator !=
+/// @fn Polynomial::operator !=
 /// @brief Non-equality operator
 /// @pre 
 /// @post 
@@ -97,7 +97,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator =
+/// @fn Polynomial::operator =
 /// @brief Assignment operator
 /// @pre 
 /// @post 
@@ -106,7 +106,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator [] const
+/// @fn Polynomial::operator [] const
 /// @brief Bracket accessor
 /// @pre 
 /// @post 
@@ -115,7 +115,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator []
+/// @fn Polynomial::operator []
 /// @brief Bracket mutator
 /// @pre 
 /// @post 
@@ -124,7 +124,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-/// @fn operator ()
+/// @fn Polynomial::operator ()
 /// @brief Functor for polynomial evaluation
 /// @pre 
 /// @post 
@@ -150,44 +150,35 @@
 /// @return 
 //////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////
-/// @fn (private) polycpy
-/// @brief Helper function to copy polynomials safely
-/// @pre 
-/// @post updates class m_coeff and m_order pointers safely
-/// @param pointer to array containing coefficient of nth term
-/// @param pointer to array containing order of the nth term
-/// @return none
-//////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <exception>
+#include <ostream>
+#include <istream>
+#include "myExceptions.hpp"
+#include <cmath>
+#include "autoarray.hpp"
+#include "monomial.hpp"
 
-struct file_error: std::exception
-{
-  public:
-    file_error(){}
-    file_error(char* what_msg):
-      msg(what_msg),
-      line(-1) {}
-    file_error(char* what_msg, const int ln):
-      msg(what_msg),
-      line(ln) {}
-    const char* what() const noexcept {return msg;}
-    const int onLine() const {return line;}
-  private:
-    char* msg;
-    int line;
-};
+template <class T>
+class Polynomial;
+
+template <class T>
+std::ostream& operator<< (std::ostream& out, const Polynomial<T> &p);
+template <class T>
+std::istream& operator>> (std::istream& in, Polynomial<T> &p);
 
 template <class T>
 class Polynomial
 {
   public:
+//    typedef autoArray<monomial<T> >::iterator iterator;
+
     Polynomial();
     Polynomial(const Polynomial<T>& src);
     ~Polynomial();
     
+//    typename iterator begin() const;
+//    typename iterator end() const;
+
     // Operator Overloads
     Polynomial<T>& operator+=(const Polynomial<T> &rhs);
     Polynomial<T>& operator+(const Polynomial<T> &rhs) const;
@@ -197,24 +188,22 @@ class Polynomial
     Polynomial<T>& operator-() const;
     Polynomial<T>& operator~() const;
     
-    bool operator==(const Polynomial<T> &rhs, const Polynomial<T> &lhs) const;
-    bool operator!=(const Polynomial<T> &rhs, const Polynomial<T> &lhs) const;
+    bool operator==(const Polynomial<T> &rhs) const;
+    bool operator!=(const Polynomial<T> &rhs) const;
     
     Polynomial<T>& operator=(const Polynomial<T> &rhs);
     
-    T& operator[](const int i);
-    const T& operator[](const int i) const;
-    T& operator()(const T &x) const;
+    monomial<T>& operator[](const int i);
+    const monomial<T>& operator[](const int i) const;
+    double operator()(const double x) const;
     
     // Friends
-    friend std::ostream& operator<<(std::ostream& out, const Polynomial<T> &p);
-    friend std::istream& operator>>(std::istream& in, Polynomial<T> &p);
-    
+    friend std::ostream& operator<< <T>(std::ostream& out, const Polynomial<T> &p);
+    friend std::istream& operator>> <T>(std::istream& in, Polynomial<T> &p);
+
   private:
     int m_nterms;
-    autoArray<T> m_coeff; // Holds values of coefficients
-    autoArray<T> m_order; // Holds corresponding order of coefficients
-    void polycpy(const T* src_order, const T*  src_coeff);
+    autoArray<monomial<T> > m_data; // Holds values of coefficients
 };
 
 #include "polynomial.tpp"
