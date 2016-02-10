@@ -1,9 +1,13 @@
-*.o
-# *.txt
-driver
+# Misc
+*.txt
 Homework/1/submit/2016sp-a-hw1-rjk9w5*
 # Submit repos for homework
-*2016sp*
+*2016
+*submit/
 # Eclipse Generated garbage
 .cproject
 .project
+# Make stuff
+driver
+depend
+*.o

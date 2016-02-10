@@ -25,6 +25,11 @@ std::istream& operator >>
     (std::istream& out, monomial<T>& data);
 
 template <class T>
+bool operator ==(const monomial<T>& lhs, const monomial<T>& rhs);
+template <class T>
+bool operator !=(const monomial<T>& lhs, const monomial<T>& rhs);
+
+template <class T>
 class monomial
 {
   public:
@@ -48,14 +53,17 @@ class monomial
       return *this;
     }
 
-    friend std::ostream& operator << <T>(std::ostream& out,
+    friend std::ostream& operator << <>(std::ostream& out,
                                         const monomial<T>& data);
-    friend std::istream& operator >> <T>(std::istream& out,
+    friend std::istream& operator >> <>(std::istream& out,
                                          monomial<T>& data);
 
-    double operator()(const double x) const
+    friend bool operator ==<>(const monomial<T>& lhs, const monomial<T>& rhs);
+    friend bool operator !=<>(const monomial<T>& lhs, const monomial<T>& rhs);
+
+    const T operator()(const T& x) const
     {
-      double ret;
+      T ret;
       ret = m_coeff*pow(x,m_order);
       return ret;
     }
@@ -126,6 +134,18 @@ std::istream& operator >>(
   in >> data.m_order;
 
   return in;
+}
+
+template <class T>
+bool operator ==(const monomial<T>& lhs, const monomial<T>& rhs)
+{
+    return (lhs.m_coeff == rhs.m_coeff && lhs.m_order == rhs.m_order);
+}
+
+template <class T>
+bool operator !=(const monomial<T>& lhs, const monomial<T>& rhs)
+{
+    return !(lhs == rhs);
 }
 
 #endif /* HOMEWORK_2_MONOMIAL_HPP_ */

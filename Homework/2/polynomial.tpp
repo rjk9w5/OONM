@@ -184,7 +184,7 @@ bool operator==(
   }
   else
   {
-    isEqual = true;
+    isEqual = false;
   }
 
   return isEqual;
