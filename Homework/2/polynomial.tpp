@@ -7,8 +7,7 @@
 template <class T>
 Polynomial<T>::Polynomial()
 {
-  m_data.setSize(0);
-  m_nterms = 0;
+  m_data.set_size(0);
 }
 
 template <class T>
@@ -16,8 +15,7 @@ Polynomial<T>& Polynomial<T>::operator =(const Polynomial<T>& src)
 {
   if(this != &src)
   {
-    this->m_nterms = src.m_nterms;
-    this->m_data = src.m_data;
+    m_data = src.m_data;
   }
 
   return *this;
@@ -49,62 +47,139 @@ Polynomial<T>::~Polynomial()
 // Operator Overloads
 
 template <class T>
-Polynomial<T>& Polynomial<T>::operator+=(const Polynomial<T>& rhs)
+const Polynomial<T>& Polynomial<T>::operator+=(const Polynomial<T>& rhs)
 {
-  *this = *this + rhs;
+  auto_array<monomial<T>> cat(rhs.get_nterms() + get_nterms());
+
+  for(int i=0; i < rhs.get_nterms(); ++i)
+  {
+    cat[i] = rhs.m_data[i];
+  }
+
+  for(int i=rhs.get_nterms(); i < cat.get_size(); ++i)
+  {
+    cat[i] = m_data[i-rhs.get_nterms()];
+  }
+
+  cat.sort();
+
+  m_data = cat;
+
+  simplify();
 
   return *this;
 }
 
 template <class T>
-Polynomial<T>& Polynomial<T>::operator+(const Polynomial<T>& rhs) const
+const Polynomial<T> Polynomial<T>::operator+(const Polynomial<T>& rhs) const
 {
-  Polynomial<T> tmp;
-  // TODO addition
+  Polynomial<T> ret(*this);
 
-  return tmp;
+  ret += rhs;
+
+  return ret;
 }
 
 template <class T>
-Polynomial<T>& Polynomial<T>::operator-=(const Polynomial<T>& rhs)
+const Polynomial<T>& Polynomial<T>::operator-=(const Polynomial<T>& rhs)
 {
-  *this = *this - rhs;
+  auto_array<monomial<T>> cat(rhs.get_nterms() + get_nterms());
+
+  for(int i=0; i < rhs.get_nterms(); ++i)
+  {
+    cat[i].set_coeff(-rhs.m_data[i].get_coeff());
+    cat[i].set_order(rhs.m_data[i].get_order());
+  }
+
+  for(int i=rhs.get_nterms(); i < cat.get_size(); ++i)
+  {
+    cat[i].set_coeff(m_data[i-rhs.get_nterms()].get_coeff());
+    cat[i].set_order(m_data[i-rhs.get_nterms()].get_order());
+  }
+
+  cat.sort();
+
+  m_data = cat;
+
+  simplify();
 
   return *this;
 }
 
 template <class T>
-Polynomial<T>& Polynomial<T>::operator-(const Polynomial<T>& rhs) const
-{
-  // TODO: Subtraction
-}
-
-template <class T>
-Polynomial<T>& Polynomial<T>::operator-() const
-{
-  // TODO Unary minus
-
-  return *this;
-}
-
-template <class T>
-Polynomial<T>& Polynomial<T>::operator~() const
-{
-  // TODO negation
-  return *this;
-}
-
-template <class T>
-bool Polynomial<T>::operator==(
+const Polynomial<T> Polynomial<T>::operator-(
     const Polynomial<T>& rhs) const
 {
-  bool isEqual = true;
-  if(this != &rhs)
+  Polynomial<T> ret(*this);
+  // TODO addition
+  ret -= rhs;
+
+  return ret;
+}
+
+template <class T>
+const Polynomial<T> Polynomial<T>::operator-() const
+{
+  Polynomial<T> ret(*this);
+
+  for(int i=0; i<get_nterms(); ++i)
+    ret.m_data[i].set_coeff(-m_data[i].get_coeff());
+
+  return ret;
+}
+
+template <class T>
+const Polynomial<T> Polynomial<T>::operator~() const
+{
+  Polynomial<T> ret(*this);
+  for(int i=0; i<get_nterms(); ++i)
   {
-    isEqual = (m_nterms==rhs.m_nterms);
+    if(m_data[i].get_coeff() > 0)
+    {
+      ret.m_data[i].set_coeff(-m_data[i].get_coeff());
+    }
+  }
+
+  return ret;
+}
+
+template <class T>
+monomial<T>& Polynomial<T>::operator[](const int i)
+{
+  return m_data[i];
+}
+
+template <class T>
+const monomial<T>& Polynomial<T>::operator[](const int i) const
+{
+  return m_data[i];
+}
+
+template <class T>
+T Polynomial<T>::operator()(const T x) const
+{
+  T value=0;
+  for(int i=0; i < get_nterms(); ++i)
+  {
+    value += m_data[i](x);
+  }
+  return value;
+}
+
+// Friends
+
+template <class T>
+bool operator==(
+    const Polynomial<T>& lhs,
+    const Polynomial<T>& rhs)
+{
+  bool isEqual = true;
+  if(&lhs != &rhs)
+  {
+    isEqual = (lhs.get_nterms()==rhs.get_nterms());
     if(isEqual)
     {
-      isEqual = (m_data == rhs.m_data);
+      isEqual = (lhs.m_data == rhs.m_data);
     }
   }
   else
@@ -116,56 +191,46 @@ bool Polynomial<T>::operator==(
 }
 
 template <class T>
-bool Polynomial<T>::operator!=(const Polynomial<T>& rhs) const
+bool operator!=(
+    const Polynomial<T>& lhs,
+    const Polynomial<T>& rhs)
 {
-  return !(*this == rhs);
+  return !(lhs == rhs);
 }
 
 template <class T>
-monomial<T>& Polynomial<T>::operator[](const int i)
+std::ostream& operator<<(
+    std::ostream& out,
+    const Polynomial<T>& p)
 {
-  // TODO: [] Write
-  return *this;
-}
-
-template <class T>
-const monomial<T>& Polynomial<T>::operator[](const int i) const
-{
-  // TODO: [] Read
-  return *this;
-}
-
-template <class T>
-double Polynomial<T>::operator()(const double x) const
-{
-  T value=0;
-  for(int i=0; i < m_nterms; ++i)
+  if(p.get_nterms()<=0)
   {
-    value += m_data[i](x);
+    out << '0';
   }
-  return value;
-}
-
-// Friends
-
-template <class T>
-std::ostream& operator<<(std::ostream& out, const Polynomial<T>& p)
-{
-  for(int i=0; i < p.m_nterms; ++i)
+  else
   {
-    out << p.m_data[i];
+    for(int i=0; i < p.m_data.get_size(); ++i)
+    {
+      //std::cout << "Printing Polynomial\n";
+      out << p.m_data[i];
+    }
   }
+  return out;
 }
 
 template <class T>
-std::istream& operator>>(std::istream& in, Polynomial<T>& p)
+std::istream& operator>>(
+    std::istream& in,
+    Polynomial<T>& p)
 {
-    int input_terms;
+    int input_terms, nterms;
     monomial<T> mono;
+    T tmpT;
+    char* dummy = new char[256];
 
-    p.m_nterms = 0;
+    nterms = 0;
     in >> input_terms;
-    p.m_data.setSize(input_terms);
+    p.m_data.set_size(input_terms);
 
     for(int j=0;j < input_terms; ++j)
     {
@@ -173,22 +238,47 @@ std::istream& operator>>(std::istream& in, Polynomial<T>& p)
       if(in.get() == '\n') break;
       in.unget();
 
-//      // Get next term coefficient
-//      in >> p.m_data[j].m_coeff;
-//
-//      if(in.get() == '\n') throw file_error("Incorrect input format.");
-//      in.unget();
-//
-//      in >> p.m_data[j].m_order;
       in >> mono;
       p.m_data[j] = mono;
-      ++p.m_nterms;
+      ++nterms;
     }
 
-    if(p.m_nterms < input_terms)
-      p.m_data.resize(p.m_nterms);
+    if(in.get() != '\n')
+      in.ignore(256, '\n');
+
+    if(nterms < input_terms)
+      p.m_data.resize(nterms);
 
     p.m_data.sort();
 
+    p.simplify();
+
     return in;
+}
+
+template <class T>
+void Polynomial<T>::simplify()
+{
+  T tmpT;
+
+  for(int i=0; i<get_nterms()-1; ++i)
+  {
+    if(m_data[i].get_order() == m_data[i+1].get_order())
+    {
+      tmpT = m_data[i].get_coeff() + m_data[i+1].get_coeff();
+      m_data[i+1].set_coeff(tmpT);
+      m_data[i].set_coeff(0);
+    }
+  }
+
+  for(int i=0; i < m_data.get_size(); ++i)
+  {
+    if(m_data[i].get_coeff() == 0)
+    {
+      m_data.remove(i);
+      --i;
+    }
+  }
+
+  return;
 }

@@ -153,6 +153,7 @@
 
 #include <ostream>
 #include <istream>
+#include <string>
 #include "myExceptions.hpp"
 #include <cmath>
 #include "autoarray.hpp"
@@ -167,43 +168,68 @@ template <class T>
 std::istream& operator>> (std::istream& in, Polynomial<T> &p);
 
 template <class T>
+bool operator==(const Polynomial<T>& lhs, const Polynomial<T> &rhs);
+template <class T>
+bool operator!=(const Polynomial<T>& lhs, const Polynomial<T> &rhs);
+
+template <class T>
 class Polynomial
 {
   public:
 //    typedef autoArray<monomial<T> >::iterator iterator;
 
     Polynomial();
+    Polynomial<T>& operator=(const Polynomial<T> &rhs);
     Polynomial(const Polynomial<T>& src);
     ~Polynomial();
     
+    const int get_nterms() const {return m_data.get_size();}
+    void simplify();
+
 //    typename iterator begin() const;
 //    typename iterator end() const;
 
-    // Operator Overloads
-    Polynomial<T>& operator+=(const Polynomial<T> &rhs);
-    Polynomial<T>& operator+(const Polynomial<T> &rhs) const;
-    Polynomial<T>& operator-=(const Polynomial<T> &rhs);
-    Polynomial<T>& operator-(const Polynomial<T> &rhs) const;
+    // Simple Math
+    const Polynomial<T>& operator+=(const Polynomial<T> &rhs);
+
+    const Polynomial<T> operator+(
+        const Polynomial<T> &rhs) const;
+
+    const Polynomial<T>& operator-=(const Polynomial<T> &rhs);
     
-    Polynomial<T>& operator-() const;
-    Polynomial<T>& operator~() const;
+    const Polynomial<T> operator-(
+        const Polynomial<T> &rhs) const;
+
+    // Unary
+    const Polynomial<T> operator-() const;
+    const Polynomial<T> operator~() const;
     
-    bool operator==(const Polynomial<T> &rhs) const;
-    bool operator!=(const Polynomial<T> &rhs) const;
-    
-    Polynomial<T>& operator=(const Polynomial<T> &rhs);
-    
+    // Access
     monomial<T>& operator[](const int i);
     const monomial<T>& operator[](const int i) const;
-    double operator()(const double x) const;
-    
-    // Friends
-    friend std::ostream& operator<< <T>(std::ostream& out, const Polynomial<T> &p);
-    friend std::istream& operator>> <T>(std::istream& in, Polynomial<T> &p);
+
+    // Evaluate
+    T operator()(const T x) const;
+
+    // Compare
+    friend bool operator==<>(
+        const Polynomial<T>& lhs,
+        const Polynomial<T> &rhs);
+
+    friend bool operator!=<>(
+        const Polynomial<T>& lhs,
+        const Polynomial<T> &rhs);
+    // IO
+    friend std::ostream& operator<< <>(
+        std::ostream& out,
+        const Polynomial<T> &p);
+
+    friend std::istream& operator>> <>(
+        std::istream& in,
+        Polynomial<T> &p);
 
   private:
-    int m_nterms;
-    autoArray<monomial<T> > m_data; // Holds values of coefficients
+    auto_array<monomial<T> > m_data; // Holds values of coefficients
 };
 
 #include "polynomial.tpp"
