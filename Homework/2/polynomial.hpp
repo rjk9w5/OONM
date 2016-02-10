@@ -160,28 +160,28 @@
 #include "monomial.hpp"
 
 template <class T>
-class Polynomial;
+class polynomial_fnct;
 
 template <class T>
-std::ostream& operator<< (std::ostream& out, const Polynomial<T> &p);
+std::ostream& operator<< (std::ostream& out, const polynomial_fnct<T> &p);
 template <class T>
-std::istream& operator>> (std::istream& in, Polynomial<T> &p);
+std::istream& operator>> (std::istream& in, polynomial_fnct<T> &p);
 
 template <class T>
-bool operator==(const Polynomial<T>& lhs, const Polynomial<T> &rhs);
+bool operator==(const polynomial_fnct<T>& lhs, const polynomial_fnct<T> &rhs);
 template <class T>
-bool operator!=(const Polynomial<T>& lhs, const Polynomial<T> &rhs);
+bool operator!=(const polynomial_fnct<T>& lhs, const polynomial_fnct<T> &rhs);
 
 template <class T>
-class Polynomial
+class polynomial_fnct
 {
   public:
 //    typedef autoArray<monomial<T> >::iterator iterator;
 
-    Polynomial();
-    Polynomial<T>& operator=(const Polynomial<T> &rhs);
-    Polynomial(const Polynomial<T>& src);
-    ~Polynomial();
+    polynomial_fnct();
+    polynomial_fnct<T>& operator=(const polynomial_fnct<T> &rhs);
+    polynomial_fnct(const polynomial_fnct<T>& src);
+    ~polynomial_fnct();
     
     const int get_nterms() const {return m_data.get_size();}
     void simplify();
@@ -190,19 +190,19 @@ class Polynomial
 //    typename iterator end() const;
 
     // Simple Math
-    const Polynomial<T>& operator+=(const Polynomial<T> &rhs);
+    const polynomial_fnct<T>& operator+=(const polynomial_fnct<T> &rhs);
 
-    const Polynomial<T> operator+(
-        const Polynomial<T> &rhs) const;
+    const polynomial_fnct<T> operator+(
+        const polynomial_fnct<T> &rhs) const;
 
-    const Polynomial<T>& operator-=(const Polynomial<T> &rhs);
+    const polynomial_fnct<T>& operator-=(const polynomial_fnct<T> &rhs);
     
-    const Polynomial<T> operator-(
-        const Polynomial<T> &rhs) const;
+    const polynomial_fnct<T> operator-(
+        const polynomial_fnct<T> &rhs) const;
 
     // Unary
-    const Polynomial<T> operator-() const;
-    const Polynomial<T> operator~() const;
+    const polynomial_fnct<T> operator-() const;
+    const polynomial_fnct<T> operator~() const;
     
     // Access
     monomial<T>& operator[](const int i);
@@ -213,20 +213,20 @@ class Polynomial
 
     // Compare
     friend bool operator==<>(
-        const Polynomial<T>& lhs,
-        const Polynomial<T> &rhs);
+        const polynomial_fnct<T>& lhs,
+        const polynomial_fnct<T> &rhs);
 
     friend bool operator!=<>(
-        const Polynomial<T>& lhs,
-        const Polynomial<T> &rhs);
+        const polynomial_fnct<T>& lhs,
+        const polynomial_fnct<T> &rhs);
     // IO
     friend std::ostream& operator<< <>(
         std::ostream& out,
-        const Polynomial<T> &p);
+        const polynomial_fnct<T> &p);
 
     friend std::istream& operator>> <>(
         std::istream& in,
-        Polynomial<T> &p);
+        polynomial_fnct<T> &p);
 
   private:
     auto_array<monomial<T> > m_data; // Holds values of coefficients

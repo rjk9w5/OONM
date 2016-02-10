@@ -2,14 +2,14 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "polynomial.hpp"
 #include "autoarray.hpp"
+#include "polynomial.hpp"
 
 int main()
 {
   std::ifstream fin;
-  std::vector<Polynomial<int>> p_vec;
-  Polynomial<int> p;//, p_input;
+  std::vector<polynomial_fnct<int>> p_vec;
+  polynomial_fnct<int> p;//, p_input;
   monomial<int> m;
   int ninputs;
 
