@@ -14,6 +14,14 @@ polynomial_fnct<T>::polynomial_fnct()
 }
 
 template <class T>
+polynomial_fnct<T>::polynomial_fnct(const T& coeff, const T& order)
+{
+  m_data.set_size(1);
+  m_data[0].m_coeff = coeff;
+  m_data[0].m_order = order;
+}
+
+template <class T>
 polynomial_fnct<T>& polynomial_fnct<T>::operator =
     (const polynomial_fnct<T>& src)
 {
@@ -61,7 +69,7 @@ template <class T>
 const polynomial_fnct<T>& polynomial_fnct<T>::operator+=
     (const polynomial_fnct<T>& rhs)
 {
-  auto_array<monomial<T>> cat(rhs.get_nterms() + get_nterms());
+  auto_array<term> cat(rhs.get_nterms() + get_nterms());
 
   for(int i=0; i < rhs.get_nterms(); ++i)
   {
@@ -97,18 +105,18 @@ template <class T>
 const polynomial_fnct<T>& polynomial_fnct<T>::operator-=
     (const polynomial_fnct<T>& rhs)
 {
-  auto_array<monomial<T>> cat(rhs.get_nterms() + get_nterms());
+  auto_array<term> cat(rhs.get_nterms() + get_nterms());
 
   for(int i=0; i < rhs.get_nterms(); ++i)
   {
-    cat[i].set_coeff(-rhs.m_data[i].get_coeff());
-    cat[i].set_order(rhs.m_data[i].get_order());
+    cat[i].m_coeff  -rhs.m_data[i].m_coeff;
+    cat[i].m_order = rhs.m_data[i].m_order;
   }
 
   for(int i=rhs.get_nterms(); i < cat.get_size(); ++i)
   {
-    cat[i].set_coeff(m_data[i-rhs.get_nterms()].get_coeff());
-    cat[i].set_order(m_data[i-rhs.get_nterms()].get_order());
+    cat[i].m_coeff  -rhs.m_data[i-rhs.get_nterms()].m_coeff;
+    cat[i].m_order = rhs.m_data[i-rhs.get_nterms()].m_order;
   }
 
   cat.sort();
@@ -137,7 +145,7 @@ const polynomial_fnct<T> polynomial_fnct<T>::operator-() const
   polynomial_fnct<T> ret(*this);
 
   for(int i=0; i<get_nterms(); ++i)
-    ret.m_data[i].set_coeff(-m_data[i].get_coeff());
+    ret.m_data[i].m_coeff = -m_data[i].m_coeff;
 
   return ret;
 }
@@ -148,9 +156,9 @@ const polynomial_fnct<T> polynomial_fnct<T>::operator~() const
   polynomial_fnct<T> ret(*this);
   for(int i=0; i<get_nterms(); ++i)
   {
-    if(m_data[i].get_coeff() > 0)
+    if(m_data[i].m_coeff > 0)
     {
-      ret.m_data[i].set_coeff(-m_data[i].get_coeff());
+      ret.m_data[i].m_coeff = -m_data[i].m_coeff;
     }
   }
 
@@ -158,17 +166,11 @@ const polynomial_fnct<T> polynomial_fnct<T>::operator~() const
 }
 
 template <class T>
-monomial<T>& polynomial_fnct<T>::operator[]
-    (const int i)
-{
-  return m_data[i];
-}
-
-template <class T>
-const monomial<T>& polynomial_fnct<T>::operator[]
+const polynomial_fnct<T> polynomial_fnct<T>::operator[]
     (const int i) const
 {
-  return m_data[i];
+  polynomial_fnct<T> p(m_data[i].m_coeff, m_data[i].m_order);
+  return p;
 }
 
 template <class T>
@@ -217,6 +219,7 @@ template <class T>
 std::ostream& operator<<
     (std::ostream& out, const polynomial_fnct<T>& p)
 {
+  T c, o;
   if(p.get_nterms()<=0)
   {
     out << '0';
@@ -225,7 +228,41 @@ std::ostream& operator<<
   {
     for(int i=0; i < p.m_data.get_size(); ++i)
     {
-      out << p.m_data[i];
+
+      c = p.m_data[i].m_coeff;
+      o = p.m_data[i].m_order;
+      if(p.m_data[i].m_coeff != 0)
+      {
+        if(o == 0)
+        {
+          if(c>0) out << '+' << ' ' << c;
+          else out << '-' << ' ' << -c;
+        }
+        else if(o==1)
+        {
+          if(c==1 || c==-1)
+          {
+            out << (c>0?'+':'-') << ' ' << 'x';
+          }
+          else
+          {
+            out << (c>0?'+':'-') << ' ' << (c>0?c:-c) << '*' << 'x';
+          }
+        }
+        else
+        {
+          if(c==1 || c==-1)
+          {
+            out << (c>0?'+':'-') << ' ' << 'x';
+          }
+          else
+          {
+            out << (c>0?'+':'-') << ' ' << (c>0?c:-c) << '*' << 'x';
+          }
+          out << '^' << o;
+        }
+        out << ' ';
+      }
     }
   }
   return out;
@@ -236,7 +273,6 @@ std::istream& operator>>
     (std::istream& in, polynomial_fnct<T>& p)
 {
     int input_terms, nterms;
-    monomial<T> mono;
     T tmpT;
     char* dummy = new char[256];
 
@@ -250,8 +286,15 @@ std::istream& operator>>
       if(in.get() == '\n') break;
       in.unget();
 
-      in >> mono;
-      p.m_data[j] = mono;
+      in >> p.m_data[j].m_coeff;
+
+      if(in.get() == '\n')
+      {
+        throw std::invalid_argument("read term: pair not found\n");
+      }
+      in.unget();
+
+      in >> p.m_data[j].m_order;
       ++nterms;
     }
 
@@ -276,17 +319,17 @@ void polynomial_fnct<T>::simplify()
 
   for(int i=0; i<get_nterms()-1; ++i)
   {
-    if(m_data[i].get_order() == m_data[i+1].get_order())
+    if(m_data[i].m_order == m_data[i+1].m_order)
     {
-      tmpT = m_data[i].get_coeff() + m_data[i+1].get_coeff();
-      m_data[i+1].set_coeff(tmpT);
-      m_data[i].set_coeff(0);
+      tmpT = m_data[i].m_coeff + m_data[i+1].m_coeff;
+      m_data[i+1].m_coeff = tmpT;
+      m_data[i].m_coeff = 0;
     }
   }
 
   for(int i=0; i < m_data.get_size(); ++i)
   {
-    if(m_data[i].get_coeff() == 0)
+    if(m_data[i].m_coeff == 0)
     {
       m_data.remove(i);
       --i;
@@ -301,7 +344,7 @@ double polynomial_fnct<T>::magnitude() const
 {
   double mag = 0;
   for(int i=0; i<get_nterms(); ++i)
-    mag+=(m_data[i].get_coeff()*m_data[i].get_coeff());
+    mag+=(m_data[i].m_coeff*m_data[i].m_coeff);
 
   mag = sqrt(mag);
 

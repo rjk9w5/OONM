@@ -9,9 +9,8 @@
 int main()
 {
   std::ifstream fin;
-  std::vector<polynomial_fnct<double>> p_vec;
-  polynomial_fnct<double> p;//, p_input;
-  monomial<double> m;
+  std::vector<polynomial_fnct<int>> p_vec;
+  polynomial_fnct<int> p;//, p_input;
   int ninputs;
 
   std::string input_file_name("notafile.txt");
@@ -36,9 +35,9 @@ int main()
   }
 
   // Get some monomial from a polynomial
-  m = p_vec[0][3];
+  p = p_vec[0][3];
   // And evaluate that monomial
-  std::cout << m(1) << '\n';
+  std::cout << p(1) << '\n';
 
   // Test a bunch of operators
   p = p_vec[1];
@@ -84,7 +83,7 @@ int main()
   if(p != p_vec[5])
     std::cout << "polynomial_fnct p is not equal to polynomial_fnct p_vec[5]\n";
 
-  infinity_norm<polynomial_fnct<double>> get_norm;
+  infinity_norm<polynomial_fnct<int>> get_norm;
 
   std::cout << get_norm(p_vec) << '\n';
 

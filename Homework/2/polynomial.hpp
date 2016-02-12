@@ -20,6 +20,14 @@
  */
 
 /*
+ *    function: polynomail_fnct(const T& coeff, const T& order)
+ *       brief: Constructor for a monomial
+ *        post: Constructs a monomial form input
+ *   parameter: coefficient of monomial
+ *   parameter: order of the monomail
+ */
+
+/*
  *    function: polynomail_fnct(const polynomail_fnct<T>&)
  *       brief: Copy constructor
  *        post: Allocates memory for a polynomial_fnct object with same values
@@ -204,7 +212,6 @@
 #include <cmath>
 #include <utility>
 #include "autoarray.hpp"
-#include "monomial.hpp"
 
 template <class T>
 class polynomial_fnct;
@@ -226,6 +233,7 @@ class polynomial_fnct
 //    typedef autoArray<monomial<T> >::iterator iterator;
 
     polynomial_fnct();
+    polynomial_fnct(const T& coeff, const T& order);
     polynomial_fnct<T>& operator=(const polynomial_fnct<T> &rhs);
     polynomial_fnct(const polynomial_fnct<T> &src);
     polynomial_fnct<T>& operator=(polynomial_fnct<T> &&rhs);
@@ -254,8 +262,7 @@ class polynomial_fnct
     const polynomial_fnct<T> operator~() const;
     
     // Access
-    monomial<T>& operator[](const int i);
-    const monomial<T>& operator[](const int i) const;
+    const polynomial_fnct<T> operator[](const int i) const;
 
     // Evaluate
     T operator()(const T& x) const;
@@ -277,8 +284,39 @@ class polynomial_fnct
         std::istream& in,
         polynomial_fnct<T> &p);
 
+    struct term
+    {
+      T m_coeff, m_order;
+
+      // For sorting
+      bool operator < (const term& cmp) const
+      {
+        return m_order < cmp.m_order;
+      }
+
+      term& operator =(const term& src)
+      {
+        m_coeff = src.m_coeff;
+        m_order = src.m_order;
+      }
+
+      bool operator ==(const term& rhs) const
+      {
+        return (m_coeff == rhs.m_coeff && m_order == rhs.m_order);
+      }
+      bool operator !=(const term& rhs) const
+      {
+        return !(*this == rhs);
+      }
+
+      const T operator()(const T& x) const
+      {
+        return m_coeff*pow(x,m_order);
+      }
+    };
+
   private:
-    auto_array<monomial<T>> m_data; // Holds values of coefficients
+    auto_array<term> m_data; // Holds values of coefficients
     void simplify();
 };
 
