@@ -6,24 +6,20 @@
 #include "polynomial.hpp"
 #include "infinity_norm.hpp"
 
-int main()
+int main(int argc, char *argv[])
 {
   std::ifstream fin;
   std::vector<polynomial_fnct<int>> p_vec;
   polynomial_fnct<int> p;//, p_input;
   int ninputs;
 
-  std::string input_file_name;//("notafile.txt");
-
-  std::cout << "Input file name: ";
-  std::cin >> input_file_name;
-
 try
 {
-  fin.open(input_file_name);
+  if(argc != 2) throw std::invalid_argument("Invalid inputs to main!");
+  fin.open(argv[1]);
   if(!fin.is_open()) throw std::invalid_argument("File not found!");
   // Read input file
-  std::cout << "Reading from input file: " << input_file_name << '\n';
+  std::cout << "Reading from input file: " << argv[1] << '\n';
   fin >> ninputs;
   for(int i=0; i < ninputs; ++i)
   {
