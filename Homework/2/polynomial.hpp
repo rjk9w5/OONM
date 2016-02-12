@@ -110,17 +110,7 @@
  */
 
 /*
- *    function: operator==(const polynomial_fnct<T>&,const polynomial<T>&)
- *       brief: Check if polynomial_fnct one is not equal to polynomial_fnct
- *              two.
- *        post: Returns result of comparison.
- *       param: polynomial_fnct one.
- *       param: polynomial_fnct two.
- *      return: True if the values are not equal, otherwise false.
- */
-
-/*
- *    function: operator==(const polynomial_fnct<T>&,const polynomial<T>&)
+ *    function: operator!=(const polynomial_fnct<T>&,const polynomial<T>&)
  *       brief: Check if polynomial_fnct one is not equal to polynomial_fnct
  *              two.
  *        post: Returns result of comparison.

@@ -86,18 +86,6 @@ auto_array<T>::~auto_array()
 {
 }
 
-//template <class T>
-//autoArray<T>::iterator autoArray<T>::end() const
-//{
-//  return m_data + m_size;
-//}
-//
-//template <class T>
-//autoArray<T>::iterator autoArray<T>::begin() const
-//{
-//  return m_data;
-//}
-
 template <class T>
 void auto_array<T>::resize(const int size)
 {
@@ -126,20 +114,19 @@ void auto_array<T>::resize(const int size)
 }
 
 template <class T>
-void auto_array<T>::reuse()
-{
-  m_data.reset(nullptr);
-  m_size = 0;
-  m_max = 0;
-  return;
-}
-
-template <class T>
 void auto_array<T>::reuse(const int size)
 {
+  if(size=0)
+  {
+    m_data.reset(nullptr);
+    m_size = 0;
+    m_max = 0;
+  }
+  else
+  {
     this -> reuse();
     this -> resize(size);
-
+  }
     return;
 }
 

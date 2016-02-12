@@ -25,24 +25,25 @@
 
 #include <vector>
 
-template <class F>
+template <class Object_t>
 class infinity_norm;
 
-template <class F>
+template <class Object_t>
 class infinity_norm
 {
 public:
-  double operator ()(const std::vector<F>& v_f);
+  double operator ()(const std::vector<Object_t>& v_f);
 };
 
-template <class F>
-double infinity_norm<F>::operator ()(const std::vector<F>& v_f)
+template <class Object_t>
+double infinity_norm<Object_t>::operator ()
+    (const std::vector<Object_t>& object_vector)
 {
   double norm = 0;
   double mag;
-  for(auto f: v_f)
+  for(auto obj: object_vector)
   {
-    mag = f.magnitude();
+    mag = obj.magnitude();
     if(mag > norm)
       norm = mag;
   }

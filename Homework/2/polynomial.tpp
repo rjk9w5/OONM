@@ -55,19 +55,6 @@ template <class T>
 polynomial_fnct<T>::~polynomial_fnct()
 {}
 
-//template <class T>
-//Polynomial<T>::iterator Polynomial<T>::begin() const
-//{
-//  return m_data.begin();
-//}
-//
-//template <class T>
-//Polynomial<T>::iterator Polynomial<T>::end() const
-//{
-//  return m_data.end();
-//}
-
-
 // Operator Overloads
 
 template <class T>
@@ -138,7 +125,7 @@ const polynomial_fnct<T> polynomial_fnct<T>::operator-
     (const polynomial_fnct<T>& rhs) const
 {
   polynomial_fnct<T> ret(*this);
-  // TODO addition
+
   ret -= rhs;
 
   return ret;
@@ -238,7 +225,6 @@ std::ostream& operator<<
   {
     for(int i=0; i < p.m_data.get_size(); ++i)
     {
-      //std::cout << "Printing Polynomial\n";
       out << p.m_data[i];
     }
   }
