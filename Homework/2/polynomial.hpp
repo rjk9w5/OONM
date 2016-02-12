@@ -214,10 +214,60 @@
 
 /*
  *    function: (private) simplify()
- *       brief: Will reduce polynomial_fnct object to least number of terms ie.
- *              no duplicate terms of same order.
+ *       brief: Will reduce polynomial_fnct object to least number of terms
+ *              ie. no duplicate terms of same order.
  *        post: Reduces
  *      return: void
+ */
+
+/*
+ *      struct: term
+ *       brief: Nested structure for internal use by polynomial_fnct class
+ */
+
+/*
+ *    function: operator < (const term& cmp)
+ *       brief: Less than operator for term type. Implemented to allow sorting.
+ *        post: Returns true if calling term object order is less than cmp
+ *              order.
+ *       param: cmp is a term object to be compared to calling term object
+ *      return: Returns true if calling term object order is less than cmp
+ *              order.
+ */
+
+/*
+ *    function: operator()(const T& x)
+ *       brief: Evalutes term as m_coeff*(x^m_order).
+ *        post: Evalutes term as m_coeff*(x^m_order) and return results.
+ *      return: Returns result from evaluating term.
+ */
+
+/*
+ *    function: operator =(const term& src)
+ *       brief: assignment for term.
+ *        post: assigns src value to calling term object.
+ *       param: src term to be copied and assigned
+ *      return: value of calling term object after assignment.
+ */
+
+/*
+ *    function: operator ==(const term& rhs)
+ *       brief: compate calling term and rhs term objects for equality
+ *        post: returns true if calling term is equal to rhs term otherwise
+ *              false.
+ *       param: rhs is term to be compared against
+ *      return: returns true if calling term is equal to rhs term otherwise
+ *              false.
+ */
+
+/*
+ *    function: operator !=(const term& rhs)
+ *       brief: compate calling term and rhs term objects for inequality
+ *        post: returns true if calling term is not equal to rhs term otherwise
+ *              false.
+ *       param: rhs is term to be compared against
+ *      return: returns true if calling term is not equal to rhs term otherwise
+ *              false.
  */
 
 #ifndef POLYNOMIAL_HPP_
