@@ -60,7 +60,26 @@
  */
 
 /*
- *    function: operator+=(polynomail_fnct<T>&)
+ *    function: operator*(const T& C)
+ *       brief: Multiplication polynomial_fnct*C
+ *        post: Returns product of C and calling polynomial_fnct object
+ *   parameter: Constant multiplier
+ *      return: Returns product of C and calling polynomial_fnct object
+ *              (polynomial_fnct)
+ */
+
+/*
+ *    function: operator*(const T& C, const polynomail_fnct<T>& p)
+ *       brief: Multiplication C*polynomial_fnct
+ *        post: Returns product of C and calling polynomial_fnct object
+ *   parameter: Constant multiplier
+ *   parameter: polynomail_fnct object to be multiplied
+ *      return: Returns product of C and calling polynomial_fnct object
+ *              (polynomial_fnct)
+ */
+
+/*
+ *    function: operator+=(const polynomail_fnct<T>&)
  *       brief: Addition and assignment
  *        post: Assigns calling object the sum of the input and the calling
  *              object.
@@ -69,7 +88,7 @@
  */
 
 /*
- *    function: operator+(polynomail_fnct<T>&)
+ *    function: operator+(const polynomail_fnct<T>&)
  *       brief: Addition
  *        post: Sums the input and the calling object.
  *   parameter: polynomail_fnct object to be added to calling object.

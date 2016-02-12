@@ -53,7 +53,7 @@ try
 
   // Output 4*p3
   std::cout << "\n4*p3\n";
-  std::cout << 4*(p_vec[3]) << std::endl;
+  std::cout << 4*(p_vec[3])*4 << std::endl;
 
   // Output (~p4)(2)
   std::cout << "\n~p4(2)\n";
