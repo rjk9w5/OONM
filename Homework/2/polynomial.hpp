@@ -357,7 +357,8 @@ class polynomial_fnct
     friend std::istream& operator>> <>(
         std::istream& in,
         polynomial_fnct<T> &p);
-
+  private:
+    // Hiding term
     struct term
     {
       T m_coeff, m_order;
@@ -388,8 +389,6 @@ class polynomial_fnct
         return m_coeff*pow(x,m_order);
       }
     };
-
-  private:
     auto_array<term> m_data; // Holds values of coefficients
     void simplify();
 };
