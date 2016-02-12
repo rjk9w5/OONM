@@ -217,6 +217,9 @@ template <class T>
 class polynomial_fnct;
 
 template <class T>
+const polynomial_fnct<T> operator*(const T& C, const polynomial_fnct<T>& p);
+
+template <class T>
 std::ostream& operator<< (std::ostream& out, const polynomial_fnct<T> &p);
 template <class T>
 std::istream& operator>> (std::istream& in, polynomial_fnct<T> &p);
@@ -247,6 +250,8 @@ class polynomial_fnct
 //    typename iterator end() const;
 
     // Simple Math
+    const polynomial_fnct<T> operator*(const T& C) const;
+
     const polynomial_fnct<T>& operator+=(const polynomial_fnct<T> &rhs);
 
     const polynomial_fnct<T> operator+(

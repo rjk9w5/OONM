@@ -48,7 +48,7 @@ polynomial_fnct<T>& polynomial_fnct<T>::operator =
   {
     m_data = std::move(other.m_data);
   }
-
+  std::cout << "Move me!\n";
   return *this;
 }
 
@@ -64,6 +64,22 @@ polynomial_fnct<T>::~polynomial_fnct()
 {}
 
 // Operator Overloads
+template <class T>
+const polynomial_fnct<T> polynomial_fnct<T>::operator* (const T& C) const
+{
+  polynomial_fnct<T> ret(*this);
+  for(int i=0; i<ret.get_nterms(); ++i)
+    ret.m_data[i].m_coeff*=C;
+
+  return ret;
+}
+
+template <class T>
+const polynomial_fnct<T> operator*
+    (const T& C, const polynomial_fnct<T>& p)
+{
+  return p*C;
+}
 
 template <class T>
 const polynomial_fnct<T>& polynomial_fnct<T>::operator+=
@@ -109,14 +125,14 @@ const polynomial_fnct<T>& polynomial_fnct<T>::operator-=
 
   for(int i=0; i < rhs.get_nterms(); ++i)
   {
-    cat[i].m_coeff  -rhs.m_data[i].m_coeff;
+    cat[i].m_coeff = -rhs.m_data[i].m_coeff;
     cat[i].m_order = rhs.m_data[i].m_order;
   }
 
   for(int i=rhs.get_nterms(); i < cat.get_size(); ++i)
   {
-    cat[i].m_coeff  -rhs.m_data[i-rhs.get_nterms()].m_coeff;
-    cat[i].m_order = rhs.m_data[i-rhs.get_nterms()].m_order;
+    cat[i].m_coeff =  m_data[i-rhs.get_nterms()].m_coeff;
+    cat[i].m_order = m_data[i-rhs.get_nterms()].m_order;
   }
 
   cat.sort();

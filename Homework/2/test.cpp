@@ -13,9 +13,15 @@ int main()
   polynomial_fnct<int> p;//, p_input;
   int ninputs;
 
-  std::string input_file_name("notafile.txt");
+  std::string input_file_name;//("notafile.txt");
 
+  std::cout << "Input file name: ";
+  std::cin >> input_file_name;
+
+try
+{
   fin.open(input_file_name);
+  if(!fin.is_open()) throw std::invalid_argument("File not found!");
   // Read input file
   std::cout << "Reading from input file: " << input_file_name << '\n';
   fin >> ninputs;
@@ -28,68 +34,118 @@ int main()
     fin >> p;
     p_vec.push_back(p);
   }
-  // Evaluate each polynomial input and output
-  for(auto it: p_vec)
-  {
-    std::cout << "f(2) = " << it << " = "<< it(2) << '\n';
-  }
+  std::cout << "Read success!\n\n";
 
-  // Get some monomial from a polynomial
-  p = p_vec[0][3];
-  // And evaluate that monomial
-  std::cout << p(1) << '\n';
+  // Output first two polynomials
+  std::cout << "Polynomial 0: ";
+  std::cout << p_vec[0] << std::endl;
+  std::cout << "Polynomial 1: ";
+  std::cout << p_vec[1] << std::endl;
 
-  // Test a bunch of operators
-  p = p_vec[1];
-  // +=
-  p += p;
-  std::cout << p << '\n';
-  //-= and +
-  p -= p_vec[0];
-  p = p_vec[1] + p;
-  std::cout << p << '\n';
+  // Output p1+=p2
+  std::cout << "\np1+=p2\n";
+  p_vec[1]+=p_vec[2];
+  std::cout << p_vec[1] << std::endl;
 
-  // Unary -
-  std::cout << "Test Unary negation:\n\n";
-  std::cout << "p: " << p << '\n';
-  std::cout <<"-p: " << -p << '\n';
-  // Unary ~
-  std::cout << "Test Unary negation:\n\n";
-  std::cout << "p: " << p << '\n';
-  std::cout <<"~p: " << ~p << '\n';
-  // +
-  std::cout << "Test polynomial addition: \n\n";
-  std::cout << ~p << "\n -plus- \n" << p << " = \n";
-  std::cout << ~p + p << '\n';
-  // -
-  std::cout << "Test polynomial addition: \n\n";
-  std::cout << ~p << "\n -minus- \n" << p << " = \n";
-  std::cout << ~p - p << '\n';
+  // Output -p1
+  std::cout << "\n-p1\n";
+  std::cout << -p_vec[1] << std::endl;
 
-  // Some additional unit testing yay!
-  std::cout << "Test ~p(5) + -p(4):\n";
-  std::cout << ~p << "|5 = " << (~p)(5) << "\n";
-  std::cout << " -plus- \n";
-  std::cout << -p << "|4 = " << (-p)(4) << "\n";
-  std::cout << "________________________________________________\n";
-  std::cout << ((~p) + (-p)) << (~p)(5) + (-p)(4) << '\n';
+  // Output p1(-1)
+  std::cout << "\np1(-1)\n";
+  std::cout << p_vec[1](-1) << std::endl;
 
-  std::cout << (p==p?"yes":"no") << '\n';
-  if(p == p)
-    std::cout << "polynomial_fnct p is equal to polynomial_fnct p!\n";
-  else
-    std::cout << "Really really really bad.....\n";
+  // Output 4*p3
+  std::cout << "\n4*p3\n";
+  std::cout << 4*(p_vec[3]) << std::endl;
 
-  if(p != p_vec[5])
-    std::cout << "polynomial_fnct p is not equal to polynomial_fnct p_vec[5]\n";
+  // Output (~p4)(2)
+  std::cout << "\n~p4(2)\n";
+  std::cout << (~p_vec[4])(2) << std::endl;
 
+
+  // Apply infinity norm to entire data set
+  std::cout << "\nTest infinity norm functor: \n";
   infinity_norm<polynomial_fnct<int>> get_norm;
-
+  std::cout << "The infinity norm of the set is: ";
   std::cout << get_norm(p_vec) << '\n';
+  std::cout << "\nAnd the magnitude of each input polynomial is:\n";
+  for(auto poly: p_vec)
+    std::cout << poly.magnitude() << std::endl;
 
 
-  // Close file when finished
-  fin.close();
+// Ryan's Tests
+//  std::cout << std::endl;
+//  // Evaluate each polynomial input and output
+//  std::cout << "Test output operator << and evaluator operator():\n";
+//  for(auto it: p_vec)
+//  {
+//    std::cout << "f(2) = " << it << " = "<< it(2) << '\n';
+//  }
+//  std::cout << std::endl;
+//
+//  // Get some monomial from a polynomial
+//  std::cout << "Test operator[]:" << "\n**Get the 4th element in the"
+//      " first input polynomial**\n";
+//  p = p_vec[0][3];
+//  std::cout << p_vec[0] << std::endl;
+//  std::cout << p << '\n' << std::endl;
+//
+//  // Unary -
+//  std::cout << "Test Unary operator-: \n";
+//  std::cout << "p: " << p << '\n';
+//  std::cout <<"-p: " << -p << '\n' << std::endl;
+//  // Unary ~
+//  std::cout << "Test Dumb operator~:\n";
+//  std::cout << "p: " << p << '\n';
+//  std::cout <<"~p: " << ~p << '\n' << std::endl;
+//  // +
+//  std::cout << "Test polynomial addition: \n";
+//  std::cout << ~p << "\n -plus- \n" << p << " = \n";
+//  std::cout << "____________________________________________________________\n";
+//  std::cout << ~p + p << '\n' << std::endl;
+//  // -
+//  std::cout << "Test polynomial addition: \n";
+//  std::cout << ~p << "\n -minus- \n" << p << " = \n";
+//  std::cout << "____________________________________________________________\n";
+//  std::cout << ~p - p << '\n' << std::endl;
+//
+//  // Some additional unit testing yay!
+//  std::cout << "Test ~p(5) + -p(4):\n";
+//  std::cout << ~p << "|5 = " << (~p)(5) << "\n";
+//  std::cout << " -plus- \n";
+//  std::cout << -p << "|4 = " << (-p)(4) << "\n";
+//  std::cout << "____________________________________________________________\n";
+//  std::cout << ((~p) + (-p)) << (~p)(5) + (-p)(4) << '\n';
+//
+//  // +=
+//  std::cout << "Test operator+=: \n";
+//  std::cout << p_vec[3] << '\n' << " +=\n" << p_vec[3] << '\n';
+//  std::cout << "____________________________________________________________\n";
+//  p_vec[3] += p_vec[3];
+//  std::cout << p_vec[3] << '\n' << std::endl;
+//  //-= and +
+//  std::cout << "Test operator-=: \n";
+//  std::cout << p_vec[4] << '\n' << " +=\n" << p_vec[4] << '\n';
+//  std::cout << "____________________________________________________________\n";
+//  p_vec[4] += p_vec[4];
+//  std::cout << p_vec[4] << '\n' << std::endl;
+//
+//  std::cout << "Test operator==: \n";
+//  std::cout << p << "\n == \n" << p << std::endl;
+//  std::cout << (p==p?"True":"False") << '\n' << std::endl;
+//
+//  std::cout << "Test operator!=: \n";
+//  std::cout << p_vec[6] << "\n == \n" << p << std::endl;
+//  std::cout << (p!=p?"True":"False") << '\n' << std::endl;
+//
+//  // Close file when finished
+//  fin.close();
+}
+catch(std::invalid_argument& ia)
+{
+  std::cerr << ia.what() << std::endl;
+}
 
   return 0;
 }
