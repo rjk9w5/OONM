@@ -1,8 +1,11 @@
-//////////////////////////////////////////////////////////////////////
-/// @file polynomial.tpp
-/// @author Ryan J. Krattiger (rjk9w5) 
-/// @brief Implementation of polynomial functions
-//////////////////////////////////////////////////////////////////////
+/*
+ * autoArray.tpp
+ *
+ *  Created on: Feb 5, 2016
+ *      Author: Ryan Krattiger (rjk9w5)
+ *       Brief: Implementation of polynomial template class and associated
+ *              friend functions
+ */
 
 template <class T>
 polynomial_fnct<T>::polynomial_fnct()
@@ -11,7 +14,8 @@ polynomial_fnct<T>::polynomial_fnct()
 }
 
 template <class T>
-polynomial_fnct<T>& polynomial_fnct<T>::operator =(const polynomial_fnct<T>& src)
+polynomial_fnct<T>& polynomial_fnct<T>::operator =
+    (const polynomial_fnct<T>& src)
 {
   if(this != &src)
   {
@@ -22,9 +26,29 @@ polynomial_fnct<T>& polynomial_fnct<T>::operator =(const polynomial_fnct<T>& src
 }
 
 template <class T>
-polynomial_fnct<T>::polynomial_fnct(const polynomial_fnct<T>& src)
+polynomial_fnct<T>::polynomial_fnct
+    (const polynomial_fnct<T>& src)
 {
   *this = src;
+}
+
+template <class T>
+polynomial_fnct<T>& polynomial_fnct<T>::operator =
+    (polynomial_fnct<T>&& other)
+{
+  if(this != &other)
+  {
+    m_data = std::move(other.m_data);
+  }
+
+  return *this;
+}
+
+template <class T>
+polynomial_fnct<T>::polynomial_fnct
+    (polynomial_fnct<T>&& other)
+{
+  *this = std::move(other);
 }
 
 template <class T>
@@ -47,7 +71,8 @@ polynomial_fnct<T>::~polynomial_fnct()
 // Operator Overloads
 
 template <class T>
-const polynomial_fnct<T>& polynomial_fnct<T>::operator+=(const polynomial_fnct<T>& rhs)
+const polynomial_fnct<T>& polynomial_fnct<T>::operator+=
+    (const polynomial_fnct<T>& rhs)
 {
   auto_array<monomial<T>> cat(rhs.get_nterms() + get_nterms());
 
@@ -71,7 +96,8 @@ const polynomial_fnct<T>& polynomial_fnct<T>::operator+=(const polynomial_fnct<T
 }
 
 template <class T>
-const polynomial_fnct<T> polynomial_fnct<T>::operator+(const polynomial_fnct<T>& rhs) const
+const polynomial_fnct<T> polynomial_fnct<T>::operator+
+    (const polynomial_fnct<T>& rhs) const
 {
   polynomial_fnct<T> ret(*this);
 
@@ -81,7 +107,8 @@ const polynomial_fnct<T> polynomial_fnct<T>::operator+(const polynomial_fnct<T>&
 }
 
 template <class T>
-const polynomial_fnct<T>& polynomial_fnct<T>::operator-=(const polynomial_fnct<T>& rhs)
+const polynomial_fnct<T>& polynomial_fnct<T>::operator-=
+    (const polynomial_fnct<T>& rhs)
 {
   auto_array<monomial<T>> cat(rhs.get_nterms() + get_nterms());
 
@@ -107,8 +134,8 @@ const polynomial_fnct<T>& polynomial_fnct<T>::operator-=(const polynomial_fnct<T
 }
 
 template <class T>
-const polynomial_fnct<T> polynomial_fnct<T>::operator-(
-    const polynomial_fnct<T>& rhs) const
+const polynomial_fnct<T> polynomial_fnct<T>::operator-
+    (const polynomial_fnct<T>& rhs) const
 {
   polynomial_fnct<T> ret(*this);
   // TODO addition
@@ -144,19 +171,22 @@ const polynomial_fnct<T> polynomial_fnct<T>::operator~() const
 }
 
 template <class T>
-monomial<T>& polynomial_fnct<T>::operator[](const int i)
+monomial<T>& polynomial_fnct<T>::operator[]
+    (const int i)
 {
   return m_data[i];
 }
 
 template <class T>
-const monomial<T>& polynomial_fnct<T>::operator[](const int i) const
+const monomial<T>& polynomial_fnct<T>::operator[]
+    (const int i) const
 {
   return m_data[i];
 }
 
 template <class T>
-T polynomial_fnct<T>::operator()(const T x) const
+T polynomial_fnct<T>::operator()
+    (const T& x) const
 {
   T value=0;
   for(int i=0; i < get_nterms(); ++i)
@@ -169,9 +199,8 @@ T polynomial_fnct<T>::operator()(const T x) const
 // Friends
 
 template <class T>
-bool operator==(
-    const polynomial_fnct<T>& lhs,
-    const polynomial_fnct<T>& rhs)
+bool operator==
+    ( const polynomial_fnct<T>& lhs, const polynomial_fnct<T>& rhs)
 {
   bool isEqual = true;
   if(&lhs != &rhs)
@@ -184,24 +213,22 @@ bool operator==(
   }
   else
   {
-    isEqual = false;
+    isEqual = true;
   }
 
   return isEqual;
 }
 
 template <class T>
-bool operator!=(
-    const polynomial_fnct<T>& lhs,
-    const polynomial_fnct<T>& rhs)
+bool operator!=
+    (const polynomial_fnct<T>& lhs, const polynomial_fnct<T>& rhs)
 {
   return !(lhs == rhs);
 }
 
 template <class T>
-std::ostream& operator<<(
-    std::ostream& out,
-    const polynomial_fnct<T>& p)
+std::ostream& operator<<
+    (std::ostream& out, const polynomial_fnct<T>& p)
 {
   if(p.get_nterms()<=0)
   {
@@ -219,9 +246,8 @@ std::ostream& operator<<(
 }
 
 template <class T>
-std::istream& operator>>(
-    std::istream& in,
-    polynomial_fnct<T>& p)
+std::istream& operator>>
+    (std::istream& in, polynomial_fnct<T>& p)
 {
     int input_terms, nterms;
     monomial<T> mono;
@@ -252,7 +278,7 @@ std::istream& operator>>(
     p.m_data.sort();
 
     p.simplify();
-
+    delete[] dummy;
     return in;
 }
 
@@ -260,6 +286,7 @@ template <class T>
 void polynomial_fnct<T>::simplify()
 {
   T tmpT;
+  m_data.sort();
 
   for(int i=0; i<get_nterms()-1; ++i)
   {
@@ -281,4 +308,16 @@ void polynomial_fnct<T>::simplify()
   }
 
   return;
+}
+
+template <class T>
+double polynomial_fnct<T>::magnitude() const
+{
+  double mag = 0;
+  for(int i=0; i<get_nterms(); ++i)
+    mag+=(m_data[i].get_coeff()*m_data[i].get_coeff());
+
+  mag = sqrt(mag);
+
+  return mag;
 }

@@ -2,7 +2,9 @@
  * autoArray.tpp
  *
  *  Created on: Feb 5, 2016
- *      Author: ryan
+ *      Author: Ryan Krattiger (rjk9w5)
+ *       Brief: Declarations of auto_array template class and associated
+ *              friend functions
  */
 
 template <class T>
@@ -56,6 +58,27 @@ template <class T>
 auto_array<T>::auto_array(const auto_array<T>& src)
 {
   *this = src;
+}
+
+template <class T>
+auto_array<T>& auto_array<T>::operator=(auto_array<T> &&other)
+{
+  if(this != &other)
+  {
+    m_size = other.m_size;
+    m_max = other.m_max;
+
+    m_data = std::move(other.m_data);
+    other.m_data.reset(nullptr);
+  }
+
+  return *this;
+}
+
+template <class T>
+auto_array<T>::auto_array(auto_array<T> &&other)
+{
+  *this = std::move(other);
 }
 
 template <class T>
