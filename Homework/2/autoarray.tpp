@@ -8,7 +8,7 @@
  */
 
 template <class T>
-auto_array<T>::auto_array()
+vector<T>::vector()
 {
   m_size = 0;
   m_max = 0;
@@ -16,7 +16,7 @@ auto_array<T>::auto_array()
 }
 
 template <class T>
-auto_array<T>::auto_array(const int size)
+vector<T>::vector(const int size)
 {
   m_data.reset(new T[size]);
   m_size = size;
@@ -24,7 +24,7 @@ auto_array<T>::auto_array(const int size)
 }
 
 template <class T>
-auto_array<T>::auto_array(const int size, const T& value)
+vector<T>::vector(const int size, const T& value)
 {
   m_data.reset(new T[size]);
   m_size = size;
@@ -36,7 +36,7 @@ auto_array<T>::auto_array(const int size, const T& value)
 }
 
 template <class T>
-auto_array<T>& auto_array<T>::operator=(const auto_array<T>& src)
+vector<T>& vector<T>::operator=(const vector<T>& src)
 {
   if(this != &src)
   {
@@ -55,13 +55,13 @@ auto_array<T>& auto_array<T>::operator=(const auto_array<T>& src)
 }
 
 template <class T>
-auto_array<T>::auto_array(const auto_array<T>& src)
+vector<T>::vector(const vector<T>& src)
 {
   *this = src;
 }
 
 template <class T>
-auto_array<T>& auto_array<T>::operator=(auto_array<T> &&other)
+vector<T>& vector<T>::operator=(vector<T> &&other)
 {
   if(this != &other)
   {
@@ -76,18 +76,18 @@ auto_array<T>& auto_array<T>::operator=(auto_array<T> &&other)
 }
 
 template <class T>
-auto_array<T>::auto_array(auto_array<T> &&other)
+vector<T>::vector(vector<T> &&other)
 {
   *this = std::move(other);
 }
 
 template <class T>
-auto_array<T>::~auto_array()
+vector<T>::~vector()
 {
 }
 
 template <class T>
-void auto_array<T>::resize(const int size)
+void vector<T>::resize(const int size)
 {
   std::unique_ptr<T[]> tmp;
   int nit = (size > m_size?m_size:size);
@@ -114,7 +114,7 @@ void auto_array<T>::resize(const int size)
 }
 
 template <class T>
-void auto_array<T>::reuse(const int size)
+void vector<T>::reuse(const int size)
 {
   if(size=0)
   {
@@ -131,13 +131,13 @@ void auto_array<T>::reuse(const int size)
 }
 
 template <class T>
-void auto_array<T>::set_size(const int size)
+void vector<T>::set_size(const int size)
 {
   this->resize(size);
 }
 
 template <class T>
-void auto_array<T>::remove(const int i)
+void vector<T>::remove(const int i)
 {
   if(i < m_size && m_size > 0 && i >=0)
   {
@@ -155,13 +155,13 @@ void auto_array<T>::remove(const int i)
 }
 
 template <class T>
-auto_array<T>& cat(const auto_array<T>& a1, const auto_array<T>& a2)
+vector<T>& cat(const vector<T>& a1, const vector<T>& a2)
 {
 
 }
 
 template <class T>
-const T& auto_array<T>::operator[](const int i) const
+const T& vector<T>::operator[](const int i) const
 {
   if(i > m_size || i < 0)
   {
@@ -173,7 +173,7 @@ const T& auto_array<T>::operator[](const int i) const
 }
 
 template <class T>
-T& auto_array<T>::operator[](const int i)
+T& vector<T>::operator[](const int i)
 {
   if(i > m_size || i < 0)
   {
@@ -186,7 +186,7 @@ T& auto_array<T>::operator[](const int i)
 
 // Must have < operator implemented
 template <class T>
-void auto_array<T>::sort()
+void vector<T>::sort()
 {
   if(!std::is_sorted(m_data.get(), m_data.get()+m_size))
     std::sort(m_data.get(), m_data.get()+m_size);
@@ -197,7 +197,7 @@ void auto_array<T>::sort()
 }
 
 template <class T>
-bool operator == (const auto_array<T>& lhs, const auto_array<T>& rhs)
+bool operator == (const vector<T>& lhs, const vector<T>& rhs)
 {
   int i = 0;
   if(lhs.m_size == rhs.m_size)
@@ -212,7 +212,7 @@ bool operator == (const auto_array<T>& lhs, const auto_array<T>& rhs)
 }
 
 template <class T>
-bool operator != (const auto_array<T>& lhs, const auto_array<T>& rhs)
+bool operator != (const vector<T>& lhs, const vector<T>& rhs)
 {
     return !(lhs==rhs);
 }

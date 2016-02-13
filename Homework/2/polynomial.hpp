@@ -389,7 +389,7 @@ class polynomial_fnct
         return m_coeff*pow(x,m_order);
       }
     };
-    auto_array<term> m_data; // Holds values of coefficients
+    vector<term> m_data; // Holds values of coefficients
     void simplify();
 };
 

@@ -145,26 +145,26 @@
 #include <memory>
 
 template <class T>
-class auto_array;
+class vector;
 
 template <class T>
-bool operator == (const auto_array<T>& lhs, const auto_array<T>& rhs);
+bool operator == (const vector<T>& lhs, const vector<T>& rhs);
 template <class T>
-bool operator != (const auto_array<T>& lhs, const auto_array<T>& rhs);
+bool operator != (const vector<T>& lhs, const vector<T>& rhs);
 template <class T>
-auto_array<T>& cat(const auto_array<T>& a1, const auto_array<T>& a2);
+vector<T>& cat(const vector<T>& a1, const vector<T>& a2);
 
 template<class T>
-class auto_array
+class vector
 {
   public:
 
-    auto_array();
-    auto_array(const int size);
-    auto_array(const int size, const T& value);
-    auto_array(const auto_array<T>& src);
-    auto_array(auto_array<T> &&other);
-    ~auto_array();
+    vector();
+    vector(const int size);
+    vector(const int size, const T& value);
+    vector(const vector<T>& src);
+    vector(vector<T> &&other);
+    ~vector();
 
     void resize(const int size=0);
 
@@ -176,25 +176,25 @@ class auto_array
 
     void remove(const int i);
 
-    friend auto_array<T>& cat<>(
-        const auto_array<T>& a1,
-        const auto_array<T>& a2);
+    friend vector<T>& cat<>(
+        const vector<T>& a1,
+        const vector<T>& a2);
 
     const T& operator[](const int i) const;
 
     T& operator[](const int i);
 
-    auto_array<T>& operator=(const auto_array<T>& src);
-    auto_array<T>& operator=(auto_array<T> &&other);
+    vector<T>& operator=(const vector<T>& src);
+    vector<T>& operator=(vector<T> &&other);
     void sort();
 
     friend bool operator == <>(
-        const auto_array<T>& lhs,
-        const auto_array<T>& rhs);
+        const vector<T>& lhs,
+        const vector<T>& rhs);
 
     friend bool operator != <>(
-        const auto_array<T>& lhs,
-        const auto_array<T>& rhs);
+        const vector<T>& lhs,
+        const vector<T>& rhs);
 
   private:
     int m_size, m_max;

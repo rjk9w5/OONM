@@ -85,7 +85,7 @@ template <class T>
 const polynomial_fnct<T>& polynomial_fnct<T>::operator+=
     (const polynomial_fnct<T>& rhs)
 {
-  auto_array<term> cat(rhs.get_nterms() + get_nterms());
+  vector<term> cat(rhs.get_nterms() + get_nterms());
 
   for(int i=0; i < rhs.get_nterms(); ++i)
   {
@@ -121,7 +121,7 @@ template <class T>
 const polynomial_fnct<T>& polynomial_fnct<T>::operator-=
     (const polynomial_fnct<T>& rhs)
 {
-  auto_array<term> cat(rhs.get_nterms() + get_nterms());
+  vector<term> cat(rhs.get_nterms() + get_nterms());
 
   for(int i=0; i < rhs.get_nterms(); ++i)
   {
