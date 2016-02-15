@@ -259,14 +259,22 @@ vector<T> operator * (const vector<T>& v1, const T& C)
 }
 
 template <class T>
+const vector<T>& vector<T>::operator += (const vector<T>& vec)
+{
+  if(vec.get_size() != get_size()) throw std::exception();
+
+  size_t it=-1;
+  for(auto val: *this)
+    *this[++it] += vec[it];
+
+  return *this;
+}
+
+template <class T>
 vector<T> operator + (const vector<T>& v1, const vector<T>& v2)
 {
-  if(v1.get_size() != v2.get_size()) throw std::exception();
-
-  vector<T> ret(v1.get_size());
-  size_t it=-1;
-  for(auto val: v1)
-    ret[++it] = val+v2[it];
+  vector<T> ret(v1);
+  ret+=v2;
 
   return ret;
 }

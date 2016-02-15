@@ -33,9 +33,13 @@ int main(int argc, char* argv[])
     fin >> avec[i];
   }
 
-  std::cin >> step;
-
+  //std::cin >> step;
+  step=5;
   bvec = avec[0].slice(avec[0].begin(), avec[0].end(), step);
+
+  bvec+=bvec;
+
+  bvec = bvec + bvec;
 
   for(auto it: avec)
   {

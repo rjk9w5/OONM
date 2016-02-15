@@ -1,5 +1,5 @@
 /*
- * autoArray.tpp
+ * vector.hpp
  *
  *  Created on: Feb 5, 2016
  *      Author: Ryan Krattiger (rjk9w5)
@@ -210,6 +210,7 @@ class vector
     friend vector<T> operator * <> (const vector<T>& v1, const vector<T>& v2);
     friend vector<T> operator * <> (const T& C, const vector<T>& v2);
     friend vector<T> operator * <> (const vector<T>& v1, const T& C);
+    const vector<T>& operator += (const vector<T>& vec);
     friend vector<T> operator + <> (const vector<T>& v1, const vector<T>& v2);
     friend vector<T> operator - <> (const vector<T>& v1, const vector<T>& v2);
     friend vector<T> operator - <> (const vector<T>& vec);
