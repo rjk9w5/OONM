@@ -373,6 +373,8 @@ class polynomial_fnct
       {
         m_coeff = src.m_coeff;
         m_order = src.m_order;
+
+        return *this;
       }
 
       bool operator ==(const term& rhs) const
