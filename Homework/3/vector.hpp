@@ -112,18 +112,14 @@ void oonm::Vector<T>::resize(const size_t size)
 template <class T>
 void oonm::Vector<T>::reuse(const size_t size)
 {
-  if(size=0)
-  {
-    m_data.reset(nullptr);
-    m_size = 0;
-    m_max = 0;
-  }
+  if(size > 0)
+    m_data.reset(new T[size]);
   else
-  {
-    this -> reuse();
-    this -> resize(size);
-  }
-    return;
+    m_data.reset(nullptr);
+
+  m_size = size;
+  m_max = size;
+  return;
 }
 
 template <class T>
@@ -337,7 +333,7 @@ oonm::Vector<T> oonm::operator - (const oonm::Vector<T>& v1,
 }
 
 template <class T>
-oonm::Vector<T> operator - (const oonm::Vector<T>& vec)
+oonm::Vector<T> oonm::operator - (const oonm::Vector<T>& vec)
 {
   oonm::Vector<T> ret(vec);
   size_t it=-1;
@@ -348,7 +344,7 @@ oonm::Vector<T> operator - (const oonm::Vector<T>& vec)
 }
 
 template <class T>
-bool operator == (const oonm::Vector<T>& lhs,
+bool oonm::operator == (const oonm::Vector<T>& lhs,
                   const oonm::Vector<T>& rhs)
 {
   size_t i = 0;
@@ -364,7 +360,7 @@ bool operator == (const oonm::Vector<T>& lhs,
 }
 
 template <class T>
-bool operator != (const oonm::Vector<T>& lhs, const oonm::Vector<T>& rhs)
+bool oonm::operator != (const oonm::Vector<T>& lhs, const oonm::Vector<T>& rhs)
 {
     return !(lhs==rhs);
 }
@@ -374,9 +370,13 @@ std::ostream& oonm::operator<<(std::ostream& out, const oonm::Vector<T>& vec)
 {
   for(int i=0; i<vec.m_size; ++i)
   {
-    out << vec[i] << ' ';
+    out << std::setprecision(5)
+        << std::setw(8)
+        << std::left
+        << std::setfill(' ')
+        << vec[i];
   }
-
+  out << '\n';
   return out;
 }
 
