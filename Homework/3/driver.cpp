@@ -10,13 +10,15 @@
 #include <cstdlib>
 #include "norms.h"
 #include "vector.h"
+#include "qr_decomp.h"
 
 int main(int argc, char* argv[])
 {
-  oonm::Vector<oonm::Vector<double>> avec;
+  oonm::Vector<oonm::Vector<double>> avec, Q, R, QQ;
   oonm::Vector<double> bvec;
   std::ifstream fin;
   Norm2<oonm::Vector<double> > L2;
+  qr_decomp<double> QR;
 
   size_t v_size, step;
 
@@ -36,6 +38,8 @@ int main(int argc, char* argv[])
     fin >> avec[i];
   }
 
+  QR(avec, Q, R);
+  QQ = Q;
   //std::cin >> step;
   step=5;
   bvec = avec[0].slice(avec[0].begin(), avec[0].end(), step);
@@ -45,26 +49,37 @@ int main(int argc, char* argv[])
   bvec = bvec + bvec;
   bvec = bvec/bvec;
   avec[1].sort();
-  for(auto it: avec)
-  {
-    std::cout << it;
-    std::cout << '\n';
-  }
+
+//  std::cout << avec << std::endl;
+//
+//  std::cout << Q << std::endl;
+//
+//  std::cout << R << std::endl;
 
   std::cout << '\n';
+  //std::cout << '\n';
 
-  for(auto it: bvec)
+  //std::cout << L2(avec[0]) << '\n';
+  size_t it=0, jt=0;
+  for(auto q1: Q)
   {
-    std::cout << it << ' ';
+    for(auto q2: Q)
+    {
+      //if(q1!=q2 && q1*q2 > .000001f)
+        //std::cout << q1*q2 << std::endl;
+        QQ[it][jt] = q1*q2;
+        jt++;
+    }
+    jt=0;
+    it++;
   }
 
+  std::cout << QQ << std::endl;
 
 
-  std::cout << '\n';
+  std::cout << '\n' << R[9][9] << std::endl;
 
-  std::cout << L2(avec[0]) << '\n';
-
-  std::cout << avec[0]*avec[1] << std::endl;
+  std::cout << R << std::endl;
   }
   catch(std::exception& except)
   {
