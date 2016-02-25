@@ -9,6 +9,7 @@
 #define QR_DECOMP_H_
 
 #include "vector.h"
+#include "norms.h"
 #include <cmath>
 #include <iostream>
 

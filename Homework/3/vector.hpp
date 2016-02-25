@@ -291,6 +291,18 @@ oonm::Vector<T> oonm::Vector<T>::operator / (const oonm::Vector<T>& v2) const
 }
 
 template <class T>
+oonm::Vector<T> oonm::Vector<T>::operator / (const T& C) const
+{
+  oonm::Vector<T> ret(*this);
+  size_t it =0;
+  for(auto val: ret)
+  {
+    ret[it++] /= C;
+  }
+  return ret;
+}
+
+template <class T>
 oonm::Vector<T> oonm::operator * (const T& C, const oonm::Vector<T>& v2)
 {
     return v2*C;
@@ -371,7 +383,7 @@ std::ostream& oonm::operator<<(std::ostream& out, const oonm::Vector<T>& vec)
   for(int i=0; i<vec.m_size; ++i)
   {
     out << std::setprecision(5)
-        << std::setw(8)
+        << std::setw(10)
         << std::left
         << std::setfill(' ')
         << vec[i];

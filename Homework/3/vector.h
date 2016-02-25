@@ -425,6 +425,7 @@ class Vector
     Vector<T>& operator -= (const Vector<T>& vec);
     Vector<T> operator * (const T& C) const;
     T operator * (const Vector<T>& v2) const;
+    Vector<T> operator / (const T& C) const;
     Vector<T> operator / (const Vector<T>& v2) const;
 
     friend Vector<T> operator+ <> (const Vector<T>& v1, const Vector<T>& v2);

@@ -13,13 +13,14 @@ void qr_decomp<T>::operator() (const oonm::Vector<oonm::Vector<T>>& A,
 {
   size_t n,m;
   T tmp;
+  Norm2<oonm::Vector<T>> l2_norm;
 
   n = A.get_size(); // Number of vectors in set
   if(n > 0)
   {
     m = A[0].get_size(); // number of elements in each vector
 
-    for(auto Ak: A)
+    for(auto& Ak: A)
     {
       // Check to make sure each vector in the set is of the same size
       if(Ak.get_size() != m) throw std::exception();
@@ -35,28 +36,20 @@ void qr_decomp<T>::operator() (const oonm::Vector<oonm::Vector<T>>& A,
 
     for(int k=0; k<n; ++k)
     {
-      R[k][k] = sqrt(Q[k]*Q[k]);
-
-      //std::cout << "R[" << k << "][" << k << "] = " << R[k][k] << std::endl;
-
-      // Update kth vector
-      for(int j=0; j<m; ++j)
-      {
-        Q[k][j] = Q[k][j]/R[k][k];
-      }
-
-      // Udate the rest of the vector set
+      // Udate the rest of the vector set with normalized vector
       for(int j=k+1; j<n; ++j)
       {
-        R[k][j] = (Q[j]*Q[k]);
-        for(int i=0; i<m; ++i)
-        {
-          Q[j][i] = Q[j][i] - R[k][j]*Q[k][i];
-        }
+        R[k][j] = (Q[k]*Q[j]);
+
+        Q[j] = Q[j] - R[k][j]*Q[j]/(Q[j]*Q[j]);
       }
+
+      // Normalize Current vector after updating others
+      R[k][k] = l2_norm(Q[k]);
+      Q[k] = Q[k]/(R[k][k]);
     }
   }
-  //std::cout << Q << std::endl;
+  std::cout << Q << std::endl;
   std::cout << "COMPLETE QR DECOMP\n";
   return;
 }
