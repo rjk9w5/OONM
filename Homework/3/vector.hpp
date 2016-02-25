@@ -7,245 +7,431 @@
  *              friend functions
  */
 
-/*
- *       class: vector
- *       brief: Template class of an array with automatic memory management.
- */
+template <class T>
+oonm::Vector<T>::Vector():
+    m_size(0), m_max(0), m_data(nullptr)
+{}
 
-/*
- *    function: vector()
- *       brief: Default constructor.
- *         pre: None
- *        post: Construct an vector object.
- */
+template <class T>
+oonm::Vector<T>::Vector(const size_t size):
+    m_size(size), m_max(size), m_data(new T[size])
+{}
 
-/*
- *    function: vector(const size_t size)
- *       brief: Constructs an vector of input size.
- *         pre: size must be greater than or equal to 0
- *        post: Constructs an vector of input size.
- *       param: size is an size_t type.
- */
-
-/*
- *    function: vector(const size_t size, const T& value)
- *       brief: Size and value constructor.
- *         pre: size must be greater than or equal to 0
- *        post: Constructs an vector of input size with all cells of input
- *              value.
- *       param: size is an size_t type.
- *       param: value is a T type.
- */
-
-/*
- *    function: vector(const vector<T>& src)
- *       brief: Copy constructor
- *         pre: None
- *        post: Constructs an vector object with same values
- *              found in input.
- *       param: vector object to be copied size_to new vector.
- */
-
-/*
- *    function: vector(vector<T>&& other)
- *       brief: Move constructor
- *         pre: None
- *        post: Moves memory for a new vector object from input.
- *       param: vector object to be moved size_to new vector.
- */
-
-/*
- *    function: operator=(const vector<T>& src)
- *       brief: Copy assignment operator.
- *         pre: none
- *        post: Copies data from src to calling object.
- *       param: src is an vector type.
- *      return: calling object.
- */
-
-/*
- *    function: operator=(vector<T>&& other)
- *       brief: Move assignment operator.
- *         pre: None
- *        post: Moves data from other to calling object.
- *       param: other is an vector type.
- *      return: calling object.
- */
-
-/*
- *    function: ~vector()
- *       brief: Destructor
- *         pre: None
- *        post: Destroys vector object.
- */
-
-/*
- *    function: resize(const size_t size)
- *       brief: Resizes vector while only destroying data in cells with
- *              indices greater than the new size.
- *         pre: size must be greater than or equal to 0
- *        post: Resizes vector but saves data.
- *       param: size to resize to, default=0. (size_t)
- *      return: none
- */
-
-/*
- *    function: reuse(const size_t size)
- *       brief: destroys all existing data and applies a new size.
- *         pre: size must be greater than or equal to 0
- *        post: destroys all existing data and applies a new size.
- *       param: size to resize to, default=0. (size_t)
- *      return: none
- */
-
-/*
- *    function: set_size(const size_t size)
- *       brief: destroys all existing data and sets new size.
- *         pre: size must be greater than or equal to 0
- *        post: destroys all existing data and sets new size.
- *       param: size to resize to. (size_t)
- *      return: none
- */
-
-/*
- *    function: get_size()
- *       brief: returns size.
- *         pre: none
- *        post: returns size.
- *      return: size of vector calling object. (size_t)
- */
-
-/*
- *    function: remove(const size_t i)
- *       brief: removes value at index i if it exists.
- *         pre: size must be greater than or equal to 0 and i must be less than
- *              the size of the calling vector object.
- *        post: value at index i is removed and data is shifted.
- *       param: index i to be removed.
- *      return: none
- */
-
-/*
- *    function: operator[](const size_t i) const
- *       brief: read only access element at index i
- *         pre: size must be greater than or equal to 0 and i must be less than
- *              the size of the calling vector object.
- *        post: returns element value at index i
- *       param: index i to be accessed
- *      return: returns element value at index i
- */
-
-/*
- *    function: operator[](const size_t i)
- *       brief: read-write access element at index i
- *         pre: size must be greater than or equal to 0 and i must be less than
- *              the size of the calling vector object.
- *        post: returns element value at index i
- *       param: index i to be accessed
- *      return: returns element value at index i
- */
-
-/*
- *    function: sort()
- *       brief: Sorts vector calling object
- *         pre: Requires template type T to have < operator implemented for use
- *              of std::sort
- *        post: Sorts vector
- *      return: none
- */
-
-#ifndef VECTOR_HPP_
-#define VECTOR_HPP_
-
-#include <exception>
-#include <iostream>
-#include <algorithm>
-#include <cstddef>
-#include <memory>
-
-namespace oonm
+template <class T>
+oonm::Vector<T>::Vector(const size_t size, const T& value):
+    m_size(size), m_max(size), m_data(new T[size])
 {
-// VECTOR DECLARATION
-template <class T>
-class vector;
-
-// FRIEND DECLARATIONS
-template <class T>
-bool operator == (const vector<T>& lhs, const vector<T>& rhs);
-template <class T>
-bool operator != (const vector<T>& lhs, const vector<T>& rhs);
-template <class T>
-vector<T>& cat(const vector<T>& a1, const vector<T>& a2);
-template <class T>
-std::ostream& operator << (std::ostream& out, const vector<T>& vec);
-template <class T>
-std::istream& operator >> (std::istream& in, vector<T>& vec);
+  for(size_t i=0; i < m_size; ++i)
+  {
+    m_data[i] = value;
+  }
+}
 
 template <class T>
-vector<T> dot(const vector<T>& v1, const vector<T>& v2);
-template <class T>
-vector<T> operator * (const vector<T>& v1, const vector<T>& v2);
-template <class T>
-vector<T> operator * (const T& C, const vector<T>& v2);
-template <class T>
-vector<T> operator * (const vector<T>& v1, const T& C);
-template <class T>
-vector<T> operator + (const vector<T>& v1, const vector<T>& v2);
-template <class T>
-vector<T> operator - (const vector<T>& v1, const vector<T>& v2);
-template <class T>
-vector<T> operator - (const vector<T>& vec);
-
-// VECTOR CLASS
-template<class T>
-class vector
+oonm::Vector<T>& oonm::Vector<T>::operator=(const oonm::Vector<T>& src)
 {
-  public:
+  if(this != &src)
+  {
+    // TODO: Figure out how to make copy and swap technique work.
+    //std::swap(*this,src);
+    m_size = src.m_size;
+    m_max = src.m_max;
 
-    vector();
-    vector(const size_t size);
-    vector(const size_t size, const T& value);
-    vector<T>& operator=(const vector<T>& src);
-    vector<T>& operator=(vector<T> &&other);
-    vector(const vector<T>& src);
-    vector(vector<T> &&other);
-    ~vector();
+    m_data.reset(new T[m_size]);
 
-    // UTILITIES
-    void resize(const size_t size=0);
-    void reuse(const size_t size=0);
-    void set_size(const size_t size);
-    const size_t get_size() const {return m_size;}
-    void remove(const size_t i);
-    const T& operator[](const size_t i) const;
-    T& operator[](const size_t i);
-    void sort();
-    T* begin();
-    T* end();
-    vector<T> slice(const T* start=begin(), const T* stop=end(), const size_t step=1);
+    for(size_t i = 0; i < m_size; ++i)
+    {
+      m_data[i] = src.m_data[i];
+    }
+  }
 
-    // MATH
-    friend vector<T> dot <> (const vector<T>& v1, const vector<T>& v2);
-    friend vector<T> operator * <> (const vector<T>& v1, const vector<T>& v2);
-    friend vector<T> operator * <> (const T& C, const vector<T>& v2);
-    friend vector<T> operator * <> (const vector<T>& v1, const T& C);
-    const vector<T>& operator += (const vector<T>& vec);
-    friend vector<T> operator + <> (const vector<T>& v1, const vector<T>& v2);
-    friend vector<T> operator - <> (const vector<T>& v1, const vector<T>& v2);
-    friend vector<T> operator - <> (const vector<T>& vec);
+  return *this;
+}
 
-    // FRIENDS
-    friend vector<T>& cat<>(const vector<T>& a1, const vector<T>& a2);
-    friend bool operator == <>(const vector<T>& lhs, const vector<T>& rhs);
-    friend bool operator != <>(const vector<T>& lhs, const vector<T>& rhs);
-    friend std::ostream& operator << <>(std::ostream& out, const vector<T>& vec);
-    friend std::istream& operator >> <>(std::istream& in, vector<T>& vec);
+template <class T>
+oonm::Vector<T>::Vector(const oonm::Vector<T>& src)
+{
+  *this = src;
+}
 
-  private:
-    size_t m_size, m_max;
-    std::unique_ptr<T[]> m_data;
-};
+template <class T>
+oonm::Vector<T>& oonm::Vector<T>::operator=(oonm::Vector<T> &&other)
+{
+  if(this != &other)
+  {
+    m_size = other.m_size;
+    m_max = other.m_max;
 
-#include "vector.tpp"
-} // oonm namespace
-#endif /* VECTOR_HPP_ */
+    m_data = std::move(other.m_data);
+    other.m_data.reset(nullptr);
+  }
+
+  return *this;
+}
+
+template <class T>
+oonm::Vector<T>::Vector(oonm::Vector<T> &&other)
+{
+  *this = std::move(other);
+}
+
+template <class T>
+oonm::Vector<T>::~Vector()
+{
+}
+
+template <class T>
+void oonm::Vector<T>::resize(const size_t size)
+{
+  std::unique_ptr<T[]> tmp;
+  size_t nit = (size > m_size?m_size:size);
+  if(size < 0) std::exception();
+
+  if(m_data != nullptr && m_size > 0 && size)
+  {
+    tmp.reset(new T[m_size]);
+    for(size_t i=0; i < m_size; ++i)
+    {
+      tmp[i] = m_data[i];
+    }
+  }
+  m_data.reset(new T[size]);
+  if(tmp != nullptr)
+  {
+    for(size_t i=0; i < nit; ++i)
+    {
+      m_data[i] = tmp[i];
+    }
+  }
+  m_size = size;
+  m_max = size;
+
+  return;
+}
+
+template <class T>
+void oonm::Vector<T>::reuse(const size_t size)
+{
+  if(size=0)
+  {
+    m_data.reset(nullptr);
+    m_size = 0;
+    m_max = 0;
+  }
+  else
+  {
+    this -> reuse();
+    this -> resize(size);
+  }
+    return;
+}
+
+template <class T>
+void oonm::Vector<T>::set_size(const size_t size)
+{
+  this->resize(size);
+  return;
+}
+
+template <class T>
+void oonm::Vector<T>::remove(const size_t i)
+{
+  if(i < m_size && m_size > 0 && i >=0)
+  {
+    for(size_t j = i; j < m_size - 1; ++j)
+      m_data[j] = m_data[j+1];
+
+    m_size--;
+  }
+  else
+  {
+    throw std::range_error("auto_array: remove: index 'i' is out of range\n");
+  }
+
+  return;
+}
+
+template <class T>
+const T& oonm::Vector<T>::operator[](const size_t i) const
+{
+  if(i > m_size || i < 0)
+  {
+    throw std::range_error("auto_array: subscript []: "\
+        "index 'i' is out of range");
+  }
+
+  return m_data[i];
+}
+
+template <class T>
+T& oonm::Vector<T>::operator[](const size_t i)
+{
+  if(i > m_size || i < 0)
+  {
+    throw std::range_error("auto_array: subscript []: "\
+        "index 'i' is out of range");
+  }
+
+  return m_data[i];
+}
+
+// Must have < operator implemented
+template <class T>
+oonm::Vector<T>& oonm::Vector<T>::sort()
+{
+  if(!std::is_sorted(m_data.get(), m_data.get()+m_size))
+    std::sort(begin(), end());
+
+  return *this;
+}
+
+template <class T>
+T* oonm::Vector<T>::begin() const
+{
+  return m_data.get();
+}
+
+template <class T>
+T* oonm::Vector<T>::end() const
+{
+  return m_data.get() + m_size;
+}
+
+template <class T>
+oonm::Vector<T> oonm::Vector<T>::slice(const T* start, const T* stop, const size_t step) const
+{
+  size_t slice_size = m_size/step +
+                      ((m_size%step||step>m_size)&&m_size!=step?1:0);
+
+  if(slice_size <= 0) throw std::exception();
+
+  oonm::Vector<T> ret(slice_size);
+  size_t i=-1;
+  const T* it = start;
+  for(; it<stop; it+=step)
+    ret[++i] = *it;
+
+  return ret;
+}
+
+template <class T>
+int oonm::Vector<T>::find(const T& value)
+{
+  size_t i_left=0;
+  size_t i_right = m_size-1;
+  size_t index = (i_right - i_left)/2;
+
+  if(m_data[i_right] == value) return i_right;
+  if(m_data[i_left] == value) return i_left;
+
+  while(m_data[index] != value)
+  {
+    if(m_data[index] > value)
+    {
+      i_right = index;
+      index = i_left + (i_right - i_left)/2;
+    }
+    else if(m_data[index] < value)
+    {
+          i_left = index;
+          index = i_left + (i_right - i_left)/2;
+    }
+
+    if(i_left == index) return -1;
+  }
+
+  return index;
+}
+
+// MATH
+template <class T>
+T oonm::Vector<T>::dot(const oonm::Vector<T>& vec) const
+{
+  if(vec.get_size() != get_size()) throw std::exception();
+
+  T ret;
+  size_t it = -1;
+  for(auto val: *this)
+    ret += val*vec[++it];
+
+  return ret;
+}
+
+template <class T>
+T oonm::dot(const oonm::Vector<T>& v1, const oonm::Vector<T>& v2)
+{
+  return v1.dot(v2);
+}
+
+template <class T>
+T oonm::Vector<T>::operator * (const oonm::Vector<T>& vec) const
+{
+  return dot(vec);
+}
+
+template <class T>
+oonm::Vector<T> oonm::Vector<T>::operator * (const T& C) const
+{
+  oonm::Vector<T> ret(*this);
+  size_t it=-1;
+  for(auto val: *this)
+    ret[++it] = val*C;
+
+  return  ret;
+}
+
+template <class T>
+oonm::Vector<T> oonm::Vector<T>::operator / (const oonm::Vector<T>& v2) const
+{
+  if(v2.get_size() != get_size()) throw std::exception();
+
+  oonm::Vector<T> ret(*this);
+  size_t it =0;
+  for(auto val: v2)
+  {
+    ret[it++] /= val;
+  }
+  return ret;
+}
+
+template <class T>
+oonm::Vector<T> oonm::operator * (const T& C, const oonm::Vector<T>& v2)
+{
+    return v2*C;
+}
+
+template <class T>
+oonm::Vector<T>& oonm::Vector<T>::operator += (const oonm::Vector<T>& vec)
+{
+  if(vec.get_size() != get_size()) throw std::exception();
+
+  size_t it=-1;
+  for(auto val: vec)
+    this -> operator[](++it) += val;
+
+  return *this;
+}
+
+template <class T>
+oonm::Vector<T> oonm::operator + (const oonm::Vector<T>& v1,
+                            const oonm::Vector<T>& v2)
+{
+  oonm::Vector<T> ret(v1);
+  ret+=v2;
+
+  return ret;
+}
+
+template <class T>
+oonm::Vector<T> oonm::operator - (const oonm::Vector<T>& v1,
+                            const oonm::Vector<T>& v2)
+{
+  if(v1.get_size() != v2.get_size()) throw std::exception();
+
+  oonm::Vector<T> ret(v1.get_size());
+  size_t it=-1;
+  for(auto val: v1)
+    ret[++it] = val-v2[it];
+
+  return ret;
+}
+
+template <class T>
+oonm::Vector<T> operator - (const oonm::Vector<T>& vec)
+{
+  oonm::Vector<T> ret(vec);
+  size_t it=-1;
+  for(auto val: vec)
+    ret[++it] = -val;
+
+  return ret;
+}
+
+template <class T>
+bool operator == (const oonm::Vector<T>& lhs,
+                  const oonm::Vector<T>& rhs)
+{
+  size_t i = 0;
+  if(lhs.m_size == rhs.m_size)
+  {
+    while(i < lhs.m_size && rhs.m_data[i] == lhs.m_data[i])
+    {
+      ++i;
+    }
+  }
+
+  return (i==rhs.m_size && i==lhs.m_size)?true:false;
+}
+
+template <class T>
+bool operator != (const oonm::Vector<T>& lhs, const oonm::Vector<T>& rhs)
+{
+    return !(lhs==rhs);
+}
+
+template <class T>
+std::ostream& oonm::operator<<(std::ostream& out, const oonm::Vector<T>& vec)
+{
+  for(int i=0; i<vec.m_size; ++i)
+  {
+    out << vec[i] << ' ';
+  }
+
+  return out;
+}
+
+template <class T>
+std::istream& oonm::operator>>(std::istream& in, oonm::Vector<T>& vec)
+{
+  for(int i=0; i<vec.m_size; ++i)
+  {
+    in >> vec[i];
+  }
+
+  return in;
+}
+
+template <class T>
+oonm::Vector<T> cat(const oonm::Vector<T>& a1, const oonm::Vector<T>& a2)
+{
+  oonm::Vector<T> ret(a1.get_size() + a2.get_size());
+  int i=-1;
+  for(auto val: a1)
+    ret[++i] = val;
+
+  for(auto val: a2)
+    ret[++i] = val;
+
+   return ret;
+}
+
+template <class T>
+T oonm::Vector<T>::sum() const
+{
+  T sm=0;
+  for(auto val: *this)
+  {
+    sm += val;
+  }
+  return sm;
+}
+
+template <class T>
+T oonm::sum(const oonm::Vector<T>& vec)
+{
+  return vec.sum();
+}
+
+template <class T>
+oonm::Vector<T> sqrt(const oonm::Vector<T>& vec)
+{
+  oonm::Vector<T> ret(vec.get_size());
+  size_t it = 0;
+
+  for(auto val: vec)
+  {
+    ret[it++] = sqrt(val);
+  }
+
+  return ret;
+}

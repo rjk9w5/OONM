@@ -6,18 +6,22 @@
  */
 
 #include <fstream>
+#include <iostream>
 #include <cstdlib>
-#include "vector.hpp"
-using namespace oonm;
+#include "norms.h"
+#include "vector.h"
 
 int main(int argc, char* argv[])
 {
-  vector<vector<double>> avec;
-  vector<double> bvec;
+  oonm::Vector<oonm::Vector<double>> avec;
+  oonm::Vector<double> bvec;
   std::ifstream fin;
+  Norm2<oonm::Vector<double> > L2;
 
   size_t v_size, step;
 
+  try
+  {
   std::cout << 10%1 << 10/1 << '\n';
 
   fin.open(argv[1]);
@@ -26,8 +30,7 @@ int main(int argc, char* argv[])
 
   fin >> v_size;
   avec.resize(v_size);
-  fin >> avec;
-  for(int i=0; i<v_size; ++i)
+  for(size_t i=0; i<v_size; ++i)
   {
     avec[i].resize(v_size);
     fin >> avec[i];
@@ -40,17 +43,32 @@ int main(int argc, char* argv[])
   bvec+=bvec;
 
   bvec = bvec + bvec;
-
+  bvec = bvec/bvec;
+  avec[1].sort();
   for(auto it: avec)
   {
     std::cout << it;
     std::cout << '\n';
   }
 
+  std::cout << '\n';
+
   for(auto it: bvec)
   {
-    std::cout << it;
-    std::cout << '\n';
+    std::cout << it << ' ';
+  }
+
+
+
+  std::cout << '\n';
+
+  std::cout << L2(avec[0]) << '\n';
+
+  std::cout << avec[0]*avec[1] << std::endl;
+  }
+  catch(std::exception& except)
+  {
+    std::cerr << "There was an error...and it is all your fault!" << std::endl;
   }
 
   return 0;
