@@ -6,7 +6,33 @@
  *       Brief: Norm definitions
  */
 
-// TODO: Comments for Norm class
+/*
+ *       class: Norm
+ *       brief: virtual Functor classes for L-norm calculation
+ */
+
+/*
+ *    function: virtual operator()
+ *       brief: virtual norm evaluation function
+ *         pre: None
+ *        post: None
+ *      return: None
+ */
+
+/*
+ *       class: Norm2
+ *       brief: Functor classes for L2-norm calculation
+ */
+
+/*
+ *    function: virtual operator()
+ *       brief: L2-norm evaluation function
+ *         pre: Obj_T type must have * operator that returns a Return_T and
+ *              Return_T must have sqrt() available and should also return a
+ *              Return_T
+ *        post: returns the L2-norm of input Obj_T as a Return_T
+ *      return: the L2-norm of input Obj_T as a Return_T
+ */
 
 #ifndef NORMS_H_
 #define NORMS_H_
@@ -15,18 +41,18 @@
 #include <iostream>
 #include "vector.h"
 
-template <class OBJ_T, class RETURN_T=double>
+template <class Obj_T, class Return_T=double>
 class Norm
 {
   public:
-    virtual RETURN_T operator () (const OBJ_T& set) = 0;
+    virtual Return_T operator () (const Obj_T& set) = 0;
 };
 
-template <class OBJ_T, class RETURN_T=double>
+template <class Obj_T, class Return_T=double>
 class Norm2
 {
   public:
-    virtual RETURN_T operator () (const OBJ_T& set);
+    virtual Return_T operator () (const Obj_T& set);
 };
 
 #include "norms.hpp"

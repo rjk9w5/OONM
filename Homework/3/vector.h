@@ -334,13 +334,22 @@
  *      return: vector square roots of elements.
  */
 
+/*
+ *    function: abs (vector)
+ *       brief: Calculates the absolute value of the elements of a vector
+ *         pre: Elements must have abs() function available
+ *        post: Returns vector with absolute values of elements.
+ *       param: Vector to have elements evaluated on
+ *      return: vector with absolute values of elements
+ */
+
 // TODO: Figure out how to comment about type-traits. Not used in assignment so
 //       not commented here.
 
 #ifndef VECTOR_HPP_
 #define VECTOR_HPP_
 
-#include <exception>
+#include "nl_exceptions.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -348,105 +357,107 @@
 #include <memory>
 #include <utility>
 #include <cmath>
+#include <fstream>
 
 namespace oonm
 {
-// VECTOR DECLARATION
-template <class T>
-class Vector;
+  // VECTOR DECLARATION
+  template <class T>
+  class Vector;
 
-// GLOBAL FUNCTION DECLARATIONS
-template <class T>
-bool operator == (const Vector<T>& lhs, const Vector<T>& rhs);
+  // GLOBAL FUNCTION DECLARATIONS
+  template <class T>
+  bool operator == (const Vector<T>& lhs, const Vector<T>& rhs);
 
-template <class T>
-bool operator != (const Vector<T>& lhs, const Vector<T>& rhs);
+  template <class T>
+  bool operator != (const Vector<T>& lhs, const Vector<T>& rhs);
 
-template <class T>
-Vector<T> cat(const Vector<T>& a1, const Vector<T>& a2);
+  template <class T>
+  Vector<T> cat(const Vector<T>& a1, const Vector<T>& a2);
 
-template <class T>
-std::ostream& operator << (std::ostream& out, const Vector<T>& vec);
+  template <class T>
+  std::ostream& operator << (std::ostream& out, const Vector<T>& vec);
 
-template <class T>
-std::istream& operator >> (std::istream& in, Vector<T>& vec);
+  template <class T>
+  std::istream& operator >> (std::istream& in, Vector<T>& vec);
 
-template <class T>
-Vector<T> operator * (const T& C, const Vector<T>& v2);
+  template <class T>
+  Vector<T> operator * (const T& C, const Vector<T>& v2);
 
-template <class T>
-Vector<T> operator + (const Vector<T>& v1, const Vector<T>& v2);
+  template <class T>
+  Vector<T> operator + (const Vector<T>& v1, const Vector<T>& v2);
 
-template <class T>
-Vector<T> operator - (const Vector<T>& v1, const Vector<T>& v2);
+  template <class T>
+  Vector<T> operator - (const Vector<T>& v1, const Vector<T>& v2);
 
-template <class T>
-Vector<T> operator - (const Vector<T>& vec);
+  template <class T>
+  Vector<T> operator - (const Vector<T>& vec);
 
-template <class T>
-T sum(const Vector<T>& vec);
+  template <class T>
+  T sum(const Vector<T>& vec);
 
-template <class T>
-T dot(const Vector<T>& v1, const Vector<T>& v2);
+  template <class T>
+  T dot(const Vector<T>& v1, const Vector<T>& v2);
 
-// VECTOR CLASS
-template <class T>
-class Vector
-{
-  public:
+  // VECTOR CLASS
+  template <class T>
+  class Vector
+  {
+    public:
 
-    Vector();
-    Vector(const size_t size);
-    Vector(const size_t size, const T& value);
-    Vector<T>& operator=(const Vector<T>& src);
-    Vector<T>& operator=(Vector<T> &&other);
-    Vector(const Vector<T>& src);
-    Vector(Vector<T> &&other);
-    ~Vector();
+      Vector();
+      Vector(const size_t size);
+      Vector(const size_t size, const T& value);
+      Vector<T>& operator=(const Vector<T>& src);
+      Vector<T>& operator=(Vector<T> &&other);
+      Vector(const Vector<T>& src);
+      Vector(Vector<T> &&other);
+      ~Vector();
 
-    // UTILITIES
-    void resize(const size_t size=0);
-    void reuse(const size_t size=0);
-    void set_size(const size_t size);
-    size_t get_size() const {return m_size;}
-    void remove(const size_t i);
-    const T& operator[](const size_t i) const;
-    T& operator[](const size_t i);
-    Vector<T>& sort();
-    T* begin() const;
-    T* end() const;
-    Vector<T> slice(const T* start=begin(), const T* stop=end(), const size_t step=1) const;
-    int find(const T& val);
+      // UTILITIES
+      void resize(const size_t size=0);
+      void reuse(const size_t size=0);
+      void clear();
+      void set_size(const size_t size);
+      size_t get_size() const {return size_;}
+      void remove(const size_t i);
+      const T& operator[](const size_t i) const;
+      T& operator[](const size_t i);
+      Vector<T>& sort();
+      T* begin() const;
+      T* end() const;
+      //Vector<T> slice(const T* start=begin(), const T* stop=end(), const size_t step=1) const;
+      int find(const T& val);
 
-    // MATH
-    T sum() const;
-    T dot(const Vector<T>& vec) const;
-    Vector<T>& operator += (const Vector<T>& vec);
-    Vector<T>& operator -= (const Vector<T>& vec);
-    Vector<T> operator * (const T& C) const;
-    T operator * (const Vector<T>& v2) const;
-    Vector<T> operator / (const T& C) const;
-    Vector<T> operator / (const Vector<T>& v2) const;
+      // MATH
+      T sum() const;
+      T dot(const Vector<T>& vec) const;
+      Vector<T>& operator += (const Vector<T>& vec);
+      Vector<T>& operator -= (const Vector<T>& vec);
+      Vector<T> operator * (const T& C) const;
+      T operator * (const Vector<T>& v2) const;
+      Vector<T> operator / (const T& C) const;
+      Vector<T> operator / (const Vector<T>& v2) const;
 
-    friend Vector<T> operator+ <> (const Vector<T>& v1, const Vector<T>& v2);
-    friend Vector<T> operator- <> (const Vector<T>& v1, const Vector<T>& v2);
-    friend Vector<T> operator- <> (const Vector<T>& vec);
+      friend Vector<T> operator+ <> (const Vector<T>& v1, const Vector<T>& v2);
+      friend Vector<T> operator- <> (const Vector<T>& v1, const Vector<T>& v2);
+      friend Vector<T> operator- <> (const Vector<T>& vec);
 
-    // FRIENDS
-    friend Vector<T> cat <> (const Vector<T>& a1, const Vector<T>& a2);
-    friend bool operator == <> (const Vector<T>& lhs, const Vector<T>& rhs);
-    friend bool operator != <> (const Vector<T>& lhs, const Vector<T>& rhs);
-    friend std::ostream& operator << <> (std::ostream& out, const Vector<T>& vec);
-    friend std::istream& operator >> <> (std::istream& in, Vector<T>& vec);
+      // FRIENDS
+      friend Vector<T> cat <> (const Vector<T>& a1, const Vector<T>& a2);
+      friend bool operator == <> (const Vector<T>& lhs, const Vector<T>& rhs);
+      friend bool operator != <> (const Vector<T>& lhs, const Vector<T>& rhs);
+      friend std::ostream& operator << <> (std::ostream& out, const Vector<T>& vec);
+      friend std::istream& operator >> <> (std::istream& in, Vector<T>& vec);
 
+    private:
+      size_t size_;
+      T* data_;
+  };
 
-  private:
-    size_t m_size, m_max;
-    std::unique_ptr<T[]> m_data;
-};
 } // oonm namespace
 
-// MICELANIOUS
+// MICELANIOUS (No comments because not used!)
 template <class T>
 struct isVector
 {
@@ -459,9 +470,13 @@ struct isVector<oonm::Vector<T>>
   static const bool value = true;
 };
 
-// TODO: Overload additional math functions from <cmath>
+// TODO: Overload additional math functions from <cmath>. Also move to a
+//       different file because this thing is crazy!
 template <class T>
 oonm::Vector<T> sqrt(const oonm::Vector<T>& vec);
+
+template <class T>
+oonm::Vector<T> abs(const oonm::Vector<T>& vec);
 
 #include "vector.hpp"
 

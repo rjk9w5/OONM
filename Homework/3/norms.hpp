@@ -6,10 +6,10 @@
  *       Brief: Norm definitions
  */
 
-template <class OBJ_T, class RETURN_T>
-RETURN_T Norm2<OBJ_T, RETURN_T>::operator()(const OBJ_T& set)
+template <class Obj_T, class Return_T>
+Return_T Norm2<Obj_T, Return_T>::operator()(const Obj_T& set)
 {
-  RETURN_T innerp = set*set;
+  Return_T innerp = set*set;
   return sqrt(innerp);
 }
 

@@ -7,13 +7,11 @@
  */
 
 template <class T>
-void qr_decomp<T>::operator() (const oonm::Vector<oonm::Vector<T>>& A,
-            oonm::Vector<oonm::Vector<T>>& Q,
-            oonm::Vector<oonm::Vector<T>>& R)
+oonm::Vector<oonm::Vector<T>>* nl::qr_decomp<T>::operator() (const oonm::Vector<oonm::Vector<T>>& A)
 {
   size_t n,m;
-  T tmp;
   Norm2<oonm::Vector<T>> l2_norm;
+  oonm::Vector<oonm::Vector<T>>* QR = new oonm::Vector<oonm::Vector<T>>[2];
 
   n = A.get_size(); // Number of vectors in set
   if(n > 0)
@@ -23,34 +21,33 @@ void qr_decomp<T>::operator() (const oonm::Vector<oonm::Vector<T>>& A,
     for(auto& Ak: A)
     {
       // Check to make sure each vector in the set is of the same size
-      if(Ak.get_size() != m) throw std::exception();
+      if(Ak.get_size() != m)
+        throw nl::FatalError("qr_decomp: Vectors not of same size!");
     }
+
     // Reset memory for Q and R vector sets
-    R.reuse(n);
+    QR[1].reuse(n);
     for(int i=0; i<n; ++i)
-      R[i].reuse(n);
+      QR[1][i].reuse(n);
 
-    Q = A;
+    // Initialize Q as a copy of A
+    QR[0] = A;
 
-    //std::cout << Q << std::endl;
-
-    for(int k=0; k<n; ++k)
+    for(size_t k=0; k<n; ++k)
     {
-      // Udate the rest of the vector set with normalized vector
-      for(int j=k+1; j<n; ++j)
+      // Normalize Current vector
+      QR[1][k][k] = l2_norm(QR[0][k]);
+      QR[0][k] = QR[0][k]/(QR[1][k][k]);
+
+      // Update the rest of the vector set with normalized vector
+      for(size_t j=k+1; j<n; ++j)
       {
-        R[k][j] = (Q[k]*Q[j]);
-
-        Q[j] = Q[j] - R[k][j]*Q[j]/(Q[j]*Q[j]);
+        QR[1][k][j] = (QR[0][k]*A[j]);// / (QR[0][j]*QR[0][j]);
+        QR[0][j] -= (QR[1][k][j] * QR[0][k]);
       }
-
-      // Normalize Current vector after updating others
-      R[k][k] = l2_norm(Q[k]);
-      Q[k] = Q[k]/(R[k][k]);
     }
   }
-  std::cout << Q << std::endl;
-  std::cout << "COMPLETE QR DECOMP\n";
-  return;
+
+  return QR;
 }
 

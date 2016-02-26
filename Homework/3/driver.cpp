@@ -5,93 +5,97 @@
  *      Author: ryan
  */
 
+/*
+ *    function: main(int, char**)
+ *       brief: The main function
+ *         pre: Must have one input file
+ *        post: Runs the main driver for the assignment
+ *      return: 0 for successful run
+ */
+
 #include <fstream>
 #include <iostream>
-#include <cstdlib>
-#include "norms.h"
 #include "vector.h"
 #include "qr_decomp.h"
+#include "nl_exceptions.h"
 
 int main(int argc, char* argv[])
 {
-  oonm::Vector<oonm::Vector<double>> avec, Q, R, QQ;
-  oonm::Vector<double> bvec;
+  oonm::Vector<oonm::Vector<double>> avec;
+  oonm::Vector<oonm::Vector<double>>* QR;
   std::ifstream fin;
-  Norm2<oonm::Vector<double> > L2;
-  qr_decomp<double> QR;
-
-  size_t v_size, step;
+  nl::qr_decomp<double> QR_decomp;
+  size_t actual_size=0;
+  size_t v_size;
 
   try
   {
-  std::cout << 10%1 << 10/1 << '\n';
+    std::cout << "File to read is: " << argv[1] << '\n';
 
-  fin.open(argv[1]);
+    fin.open(argv[1]);
 
-  if(fin.is_open())
+    if(!fin.is_open()) throw nl::FatalError("File could not be opened!");
 
-  fin >> v_size;
-  avec.resize(v_size);
-  for(size_t i=0; i<v_size; ++i)
-  {
-    avec[i].resize(v_size);
-    fin >> avec[i];
+    fin >> v_size;
+    std::cout << v_size << '\n';
+    avec.set_size(v_size);
+    for(size_t i=0; i<v_size && fin.good(); ++i)
+    {
+      avec[i].set_size(v_size);
+      fin >> avec[i];
+      actual_size++;
+    }
+    fin.close();
+
+    if(actual_size != v_size)
+      throw nl::FatalError("The input file gives the wrong size!\n");
+
+    std::cout << "The sum of the first two vectors read: \n";
+    std::cout << (avec[1] + avec[0]) << std::endl<< std::endl;
+
+    std::cout << "The difference of the first two vectors read: \n";
+    std::cout << (avec[1] - avec[0]) << std::endl<< std::endl;
+
+    std::cout << "The inner product of the first two vectors read: \n";
+    std::cout << (avec[1] * avec[0]) << std::endl<< std::endl;
+
+    std::cout << "Demonstrating the output of a vector of scalars: \n";
+    std::cout << avec[0] << std::endl<< std::endl;
+
+    std::cout << "Demonstrating the output of a vector of vectors: \n";
+    std::cout << avec << std::endl<< std::endl;
+
+    std::cout << "Demonstrating the [] operator (display only here): \n";
+    std::cout << avec[0][0] << std::endl<< std::endl;
+
+    std::cout << "Computing QR decomposition (Modified Gram-Schmidt): \n";
+    QR = QR_decomp(avec);
+    std::cout << "The Q matrix is: \n";
+    std::cout << QR[0] << std::endl<< std::endl;
+    std::cout << "The R matrix is: \n";
+    std::cout << QR[1] << std::endl<< std::endl;
+
+    std::cout << "The n^2 dot products of the Qi's: \n";
+    actual_size=1;
+    for(auto& Qj: QR[0])
+    {
+      // Demonstrate Normaility of each vector
+      std::cout << "(Q" << std::setw(3) << actual_size
+                << ",Q" << std::setw(3) <<  actual_size << ")  =  "
+                << Qj*Qj << '\n';
+      //for(auto& Qi: QR[0])
+        // Demonstrates the Orthogonality of each vector to all others
+        //std::cout << Qj*Qi << '\n';
+      actual_size++;
+    }
   }
-
-  QR(avec, Q, R);
-  QQ = Q;
-  //std::cin >> step;
-  step=5;
-  bvec = avec[0].slice(avec[0].begin(), avec[0].end(), step);
-
-  bvec+=bvec;
-
-  bvec = bvec + bvec;
-  bvec = bvec/bvec;
-  avec[1].sort();
-
-//  std::cout << avec << std::endl;
-//
-//  std::cout << Q << std::endl;
-//
-//  std::cout << R << std::endl;
-
-  std::cout << '\n';
-  //std::cout << '\n';
-
-  //std::cout << L2(avec[0]) << '\n';
-  size_t it=0, jt=0;
-  for(auto q1: Q)
-  {
-//    for(auto q2: Q)
-//    {
-      //if(q1!=q2 && q1*q2 > .000001f)
-        //std::cout << q1*q2 << std::endl;
-        QQ[it][it] = q1*q1;
-        jt++;
-//    }
-    jt=0;
-    it++;
-  }
-
-  //std::cout << QQ << std::endl;
-  oonm::Vector<double> Qkk(Q.get_size());
-  it =0;
-  for(auto& val: Q)
-  {
-    Qkk[it++] = val*val;
-  }
-  //std::cout << '\n' << R[9][9] << std::endl;
-  std::cout << Qkk << std::endl;
-  //std::cout << R << std::endl;
-
-  std::cout << avec[1] << std::endl;
-  std::cout << (Q[1]*avec[1])*Q[1] << std::endl;
-  }
-  catch(std::exception& except)
+  catch(nl::FatalError& except)
   {
     std::cerr << "There was an error...and it is all your fault!" << std::endl;
+    std::cerr << except.what() << std::endl;
   }
+
+  delete[] QR;
 
   return 0;
 }
