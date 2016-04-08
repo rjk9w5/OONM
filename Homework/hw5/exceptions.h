@@ -57,6 +57,7 @@ namespace oonm
   {
     public:
       RangeException(): msg_() {}
+      RangeException(std::string const &m): msg_(m) {}
       virtual ~RangeException() {}
 
       virtual const std::string errMsg() const noexcept
@@ -91,13 +92,9 @@ namespace oonm
       std::string msg_;
   };
 
-  class FatalError: std::exception
+  class FatalError: public Exception
   {
     public:
-
-      explicit FatalError(const char* msg): msg_(msg)
-      {
-      }
 
       explicit FatalError(const std::string& msg): msg_(msg)
       {
@@ -105,9 +102,15 @@ namespace oonm
 
       virtual ~FatalError() throw (){}
 
-      virtual const char* what() const throw()
+      virtual const std::string errMsg() const throw()
       {
-        return msg_.c_str();
+        return msg_;
+      }
+
+      virtual Exception& operator << (std::string const &msg)
+      {
+        msg_ = msg_ + msg;
+        return *this;
       }
 
     protected:

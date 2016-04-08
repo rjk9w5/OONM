@@ -85,7 +85,7 @@ std::ostream& oonm::operator<<(std::ostream& out, const oonm::Vector<T>& vec)
         << std::setw(12)
         << std::left
         << std::setfill(' ')
-        << vec[i];
+        << vec.data_[i];
     out << '\n';
   }
   return out;

@@ -18,11 +18,11 @@ namespace oonm
   template <class Ele_T>
   class MatrixDense;
 
-    template <class Ele_T>
-    void
-    swap(
-        MatrixDense<Ele_T> &m1,
-        MatrixDense<Ele_T> &m2);
+  template <class Ele_T>
+  void
+  swap(
+      MatrixDense<Ele_T> &m1,
+      MatrixDense<Ele_T> &m2);
 
   template <class Ele_T>
   class MatrixDense: public virtual oonm::Matrix_type<Ele_T>
@@ -72,15 +72,27 @@ namespace oonm
             std::size_t const i) const;
 
         virtual inline std::size_t
-        get_nrows() const;
+        N() const;
 
         virtual inline std::size_t
-        get_ncols() const;
+        M() const;
+
+        virtual void
+        swapr(
+            std::size_t const r1,
+            std::size_t const r2);
+
+        virtual void
+        swapc(
+            std::size_t const c1,
+            std::size_t const c2);
 
         virtual inline void
         set_size(
             std::size_t const n,
             std::size_t const m);
+
+        virtual void print(std::ostream& out) const;
 
         friend void
         swap <> (
@@ -88,8 +100,8 @@ namespace oonm
             MatrixDense<Ele_T> &m2);
       private:
         oonm::Vector<Ele_T> data_;
-        std::size_t r_;
-        std::size_t c_;
+        std::size_t n_;
+        std::size_t m_;
     };
 }; // oonm namespace
 

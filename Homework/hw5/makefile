@@ -1,6 +1,5 @@
 CXX=g++
-CFLAGS= -std=c++11
-CWARN= -Wall -g -W -Wpendantic
+CFLAGS= -std=c++11 -Wall -g -W
 
 SRC=${wildcard *.cpp}
 HEADERS=${wildcard *.hpp}

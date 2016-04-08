@@ -10,6 +10,8 @@
 
 #include <memory>
 #include <iostream>
+#include <iomanip>
+#include "vector.h"
 
 namespace oonm
 {
@@ -22,8 +24,30 @@ namespace oonm
         Matrix_type<Ele_T> const &m1,
         Matrix_type<Ele_T> const &m2);
 
-//  template <class Ele_T>
-//  void swap(Matrix_type<Ele_T> &m1, Matrix_type<Ele_T> &m2);
+  template <class Ele_T>
+  std::shared_ptr<oonm::Matrix_type<Ele_T>>
+    operator - (
+        Matrix_type<Ele_T> const &m1,
+        Matrix_type<Ele_T> const &m2);
+
+  template <class Ele_T>
+  std::shared_ptr<oonm::Matrix_type<Ele_T>>
+    operator * (
+        Matrix_type<Ele_T> const &m1,
+        Matrix_type<Ele_T> const &m2);
+
+  template <class Ele_T>
+  oonm::Vector<Ele_T>
+    operator * (
+        Matrix_type<Ele_T> const &mat,
+        Vector<Ele_T> const &v);
+
+  template <class Ele_T>
+  std::ostream&
+  operator << (
+      std::ostream &out,
+      Matrix_type<Ele_T> const &mat);
+
 
   template <class Ele_T>
   class Matrix_type
@@ -53,15 +77,27 @@ namespace oonm
           std::size_t const i) const = 0;
 
       virtual inline std::size_t
-      get_nrows() const = 0;
+      N() const = 0;
 
       virtual inline std::size_t
-      get_ncols() const = 0;
+      M() const = 0;
+
+      virtual void
+      swapr(
+          std::size_t const r1,
+          std::size_t const r2) = 0;
+
+      virtual void
+      swapc(
+          std::size_t const c1,
+          std::size_t const c2) = 0;
 
       virtual inline void
       set_size(
           std::size_t const n,
           std::size_t const m) = 0;
+
+      virtual void print(std::ostream& out) const = 0;
   };
 }; // oonm namespace
 
